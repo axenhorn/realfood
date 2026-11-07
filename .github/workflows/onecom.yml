@@ -1,0 +1,26 @@
+name: Publicera och verifiera WordPress-filer
+on:
+  workflow_call:
+    inputs:
+      target:
+        type: string
+        required: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 -m pip install 'paramiko==3.5.1'
+      - run: python3 deploy/publish.py
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          SFTP_KNOWN_HOSTS: ${{ secrets.SFTP_KNOWN_HOSTS }}
+          WP_ROOT: ${{ vars.WP_ROOT }}
+          WP_URL: ${{ vars.WP_URL }}
+          TARGET: ${{ inputs.target }}

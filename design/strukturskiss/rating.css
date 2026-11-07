@@ -1,0 +1,8 @@
+#betyg{margin:22px 0 0;padding:16px 0 0;border:0;border-top:1px solid #abb4a9}
+#betyg legend{font:normal 24px Georgia,serif;padding:0 8px 0 0}
+.stars{display:flex;width:max-content}.stars label{position:relative;cursor:pointer;color:#854026}
+.stars input{position:absolute;width:1px;height:1px;opacity:0;padding:0}
+.stars span{display:grid;place-items:center;width:44px;height:44px;font-size:32px}
+.stars .filled span::before{content:"★"}.stars .filled span{font-size:0}.stars .filled span::before{font-size:32px}
+.stars input:focus-visible+span{outline:2px solid #233d34}
+#betyg output,#betyg small{display:block}.rating-link{font-weight:bold}
