@@ -20,7 +20,6 @@ jobs:
           SFTP_HOST: ${{ secrets.SFTP_HOST }}
           SFTP_USER: ${{ secrets.SFTP_USER }}
           SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
-          SFTP_KNOWN_HOSTS: ${{ secrets.SFTP_KNOWN_HOSTS }}
           WP_ROOT: ${{ inputs.target == 'staging' && '/webroots/d36760fb' || vars.WP_ROOT }}
           WP_URL: ${{ inputs.target == 'staging' && 'https://realfood.axenhorn.se' || vars.WP_URL }}
           TARGET: ${{ inputs.target }}
