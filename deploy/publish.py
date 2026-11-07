@@ -3,7 +3,6 @@ import os
 import re
 import stat
 import sys
-import tempfile
 import uuid
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
@@ -128,10 +127,13 @@ def main():
         print("Deployable components:", ", ".join(parts))
         return
     import paramiko
-    with tempfile.NamedTemporaryFile("w") as known, paramiko.SSHClient() as client:
-        known.write(os.environ["SFTP_KNOWN_HOSTS"].strip() + "\n")
-        known.flush()
-        client.load_host_keys(known.name)
+    class OneComHostKey(paramiko.MissingHostKeyPolicy):
+        def missing_host_key(self, client, hostname, key):
+            if key.get_name() != "ssh-ed25519" or key.fingerprint != "SHA256:iDgAh/1dj9HyXk3nOztS6nK7jJI1IyR2uUrxDCF9kI8":
+                raise paramiko.SSHException("Unexpected One.com host key")
+
+    with paramiko.SSHClient() as client:
+        client.set_missing_host_key_policy(OneComHostKey())
         client.connect(os.environ["SFTP_HOST"], username=os.environ["SFTP_USER"],
                        password=os.environ["SFTP_PASSWORD"], look_for_keys=False,
                        allow_agent=False, timeout=20, auth_timeout=20)
