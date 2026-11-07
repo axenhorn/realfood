@@ -10,7 +10,7 @@ GitHub Actions kontrollerar pull requests. En push till main publicerar samma co
 
 Skapa GitHub-miljöerna staging och production under Settings → Environments. Staging använder https://realfood.axenhorn.se och /webroots/d36760fb. Lägg in WP_ROOT och WP_URL i production för den befintliga WordPress-installationen.
 
-Lägg in SFTP_HOST, SFTP_USER, SFTP_PASSWORD och SFTP_KNOWN_HOSTS som Actions secrets. De kan läggas på reponivå om samma konto används. SFTP_KNOWN_HOSTS innehåller en verifierad OpenSSH known_hosts-rad för värden på port 22. Använd ett värdnyckelavtryck som kontrollerats mot One.com. SFTP-kontot behöver kunna skriva i wp-content, skapa symboliska länkar och göra atomiskt namnbyte med OpenSSH POSIX rename. Webbservern måste kunna följa dessa länkar och läsa versionsmarkören via HTTPS. En stagingmiljö med HTTP-inloggning behöver anpassad autentisering för kontrollen innan första körningen.
+Lägg in SFTP_HOST, SFTP_USER och SFTP_PASSWORD som Actions secrets. Publiceringsskriptet kontrollerar One.com-serverns ED25519-nyckel mot samma SHA256-avtryck som Studio. SFTP-kontot behöver kunna skriva i wp-content, skapa symboliska länkar och göra atomiskt namnbyte med OpenSSH POSIX rename. Webbservern måste kunna följa dessa länkar och läsa versionsmarkören via HTTPS. En stagingmiljö med HTTP-inloggning behöver anpassad autentisering för kontrollen innan första körningen.
 
 ## Vad publiceras?
 
