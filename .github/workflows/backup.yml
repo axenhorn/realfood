@@ -1,0 +1,72 @@
+name: WordPress filbackup
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: real-food-publish
+  cancel-in-progress: false
+jobs:
+  backup:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - run: python3 -m pip install 'paramiko==3.5.1'
+      - name: Backup and isolated file restore verification
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import os, paramiko
+          class PinnedHost(paramiko.MissingHostKeyPolicy):
+              def missing_host_key(self, client, hostname, key):
+                  if key.get_name() != "ssh-ed25519" or key.fingerprint != "SHA256:iDgAh/1dj9HyXk3nOztS6nK7jJI1IyR2uUrxDCF9kI8":
+                      raise paramiko.SSHException("Unexpected One.com host key")
+          script = r"""
+          set -eu
+          umask 077
+          root=/customers/a/2/c/ce8ick9k1/webroots/www
+          base=/customers/a/2/c/ce8ick9k1/realfood-backups
+          test -f "$root/wp-includes/version.php"
+          test -f "$root/wp-config.php"
+          mkdir -p "$base"
+          chmod 700 "$base"
+          dest=$(mktemp -d "$base/wordpress-$(date -u +%Y%m%dT%H%M%SZ)-XXXXXX")
+          cd "$root"
+          set -- wp-admin wp-includes wp-content
+          for f in wp-*.php index.php xmlrpc.php .htaccess .user.ini robots.txt; do
+              if test -f "$f"; then set -- "$@" "$f"; fi
+          done
+          tar -czf "$dest/wordpress-files.tar.gz" -- "$@"
+          gzip -t "$dest/wordpress-files.tar.gz"
+          mkdir "$dest/restore-test"
+          tar -xzf "$dest/wordpress-files.tar.gz" -C "$dest/restore-test"
+          tar -dzf "$dest/wordpress-files.tar.gz" -C "$dest/restore-test"
+          test -f "$dest/restore-test/wp-config.php"
+          test -f "$dest/restore-test/wp-includes/version.php"
+          test -d "$dest/restore-test/wp-content/uploads"
+          cd "$dest"
+          sha256sum wordpress-files.tar.gz > SHA256SUMS
+          sha256sum -c SHA256SUMS
+          printf 'WordPress files backed up and restored to isolated directory: %s\n' "$dest"
+          du -h wordpress-files.tar.gz
+          printf 'Database restore and application startup are NOT part of this check.\n'
+          """
+          with paramiko.SSHClient() as client:
+              client.set_missing_host_key_policy(PinnedHost())
+              client.connect(os.environ["SFTP_HOST"], username=os.environ["SFTP_USER"],
+                  password=os.environ["SFTP_PASSWORD"], look_for_keys=False, allow_agent=False,
+                  timeout=20, auth_timeout=20)
+              stdin, stdout, stderr = client.exec_command("sh -s", timeout=1500)
+              stdin.write(script)
+              stdin.channel.shutdown_write()
+              output = stdout.read().decode()
+              errors = stderr.read().decode()
+              status = stdout.channel.recv_exit_status()
+              print(output)
+              if errors: print(errors)
+              if status: raise SystemExit(status)
+          PY
