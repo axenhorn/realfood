@@ -1,0 +1,57 @@
+import {scale} from './quantities.mjs';
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl=s=>{try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)?u.href:'';}catch{return '';}};
+let csrf='',recipes=[],filter='Alla',editing=null,current=null;
+let wakeLock=null,cooking=false;
+const draftKey=id=>'realfood:draft:'+(id||'new');
+function draftSave(){
+ const data={values:Object.fromEntries(new FormData($('#recipe-form'))),raw:$('#raw-text').value,revision:editing?.revision??null};
+ try{localStorage.setItem(draftKey(editing?.id),JSON.stringify(data));$('#save-status').textContent='Utkast sparat på den här enheten.';}catch{$('#save-status').textContent='Utkast kunde inte sparas lokalt. Spara receptet innan du stänger.';}
+}
+async function requestWake(){
+ if(!cooking||document.visibilityState!=='visible')return;
+ try{if(!navigator.wakeLock)throw Error();wakeLock=await navigator.wakeLock.request('screen');}
+ catch{const status=$('#detail-status');if(status)status.textContent='Matlagningsläge är på. Enheten kan inte hålla skärmen tänd automatiskt.';}
+}
+async function stopCooking(){cooking=false;$('#detail').classList.remove('cooking');if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}}
+document.addEventListener('visibilitychange',()=>{if(!cooking||document.visibilityState!=='visible')return;if(wakeLock&&!wakeLock.released)return;requestWake();});
+$('#detail').addEventListener('close',stopCooking);
+$('#recipe-form').addEventListener('input',draftSave);
+
+async function api(action,body){const r=await fetch('api.php?action='+action,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-CSRF-Token':csrf}:{},body:body?JSON.stringify(body):undefined});let data;try{data=await r.json();}catch{throw Error('Servern kunde inte svara. Kontrollera installationen.');}if(!r.ok)throw Error(data.error||'Något gick fel.');return data;}
+function message(s){$('#status').textContent=s;}
+function authenticated(value){$('#login').hidden=value;$('#collection').hidden=!value;$('#logout').hidden=!value;$('#export').hidden=!value;}
+async function load(){recipes=await api('list');render();}
+function render(){
+ const categories=[...new Set(recipes.flatMap(r=>r.categories))].sort((a,b)=>a.localeCompare(b,'sv'));if(!['Alla','♥ Favoriter',...categories].includes(filter))filter='Alla';
+ $('#filters').innerHTML=['Alla','♥ Favoriter',...categories].map(c=>`<button class="${filter===c?'selected':''}" aria-pressed="${filter===c}" data-filter="${esc(c)}">${esc(c)}</button>`).join('');
+ const query=$('#search').value.toLocaleLowerCase('sv');const items=recipes.filter(r=>(filter==='Alla'||filter==='♥ Favoriter'&&r.favorite||r.categories.includes(filter))&&[r.title,r.description,...r.ingredients,...r.categories].join(' ').toLocaleLowerCase('sv').includes(query));
+ $('#count').textContent=`(${recipes.length})`;
+ $('#cards').innerHTML=items.length?items.map(r=>`<article class="card" tabindex="0" role="button" aria-label="Öppna ${esc(r.title)}" data-id="${r.id}">${safeUrl(r.image)?`<img src="${esc(safeUrl(r.image))}" alt="${esc(r.title)}" loading="lazy" referrerpolicy="no-referrer">`:'<div class="no-image" aria-hidden="true">Från vårt kök</div>'}<div class="card-body"><div class="meta">${esc(r.categories.slice(0,2).join(' · ')||'Vårt recept')} ${r.favorite?'♥':''}</div><h3>${esc(r.title)}</h3><p>${esc(r.description)}</p><small>${esc(r.servings)} portioner</small></div></article>`).join(''):`<div class="empty"><h3>${recipes.length?'Inga recept hittades':'Här börjar familjens receptbok'}</h3><p>${recipes.length?'Prova en annan sökning eller kategori.':'Klistra in en länk eller skriv in det där receptet alla brukar fråga efter.'}</p>${recipes.length?'':'<button class="primary" id="empty-add">Lägg till vårt första recept</button>'}</div>`;
+ $('#empty-add')?.addEventListener('click',()=>edit());
+ for(const img of $('#cards').querySelectorAll('img'))img.addEventListener('error',()=>{const d=document.createElement('div');d.className='no-image';d.textContent='Från vårt kök';img.replaceWith(d);});
+}
+function edit(r=null){editing=r?structuredClone(r):null;$('#recipe-form').reset();$('#raw-text').value='';$('#import-status').textContent='';$('#save-status').textContent='';$('#editor-title').textContent=r?'Redigera recept':'Ett nytt favoritrecept';fill(r||{servings:4});
+ try{const draft=JSON.parse(localStorage.getItem(draftKey(r?.id))||'null');if(draft&&confirm('Det finns ett lokalt utkast. Vill du återställa det?')){
+ for(const [key,value] of Object.entries(draft.values))if($('#recipe-form').elements[key])$('#recipe-form').elements[key].value=value;
+ $('#raw-text').value=draft.raw||'';
+ if(r&&draft.revision!==r.revision){editing.revision=draft.revision;$('#save-status').textContent='Receptet har ändrats sedan utkastet sparades. Kopiera utkastets ändringar och öppna den senaste versionen innan du sparar.';}
+ }}catch{}$('#editor').showModal();}
+function fill(r){for(const name of ['title','description','servings','categories','image','ingredients','steps','notes','source']){$('#recipe-form').elements[name].value=Array.isArray(r[name])?r[name].join(name==='categories'?', ':'\n'):r[name]??'';}}
+function show(r){stopCooking();current=r;const d=$('#detail');$('#recipe-detail').innerHTML=`<div class="dialog-head"><div><p class="eyebrow">${esc(r.categories.join(' · ')||'FRÅN VÅRT KÖK')}</p><h2>${esc(r.title)}</h2></div><button class="close" data-close="detail" aria-label="Stäng">×</button></div>${safeUrl(r.image)?`<img class="detail-image" src="${esc(safeUrl(r.image))}" alt="${esc(r.title)}" referrerpolicy="no-referrer">`:''}<p class="detail-description">${esc(r.description)}</p><div class="servings"><label for="portion">Portioner</label><button id="minus" aria-label="Färre portioner">−</button><input id="portion" type="number" min="0.1" max="1000" step="0.1" value="${r.servings}"><button id="plus" aria-label="Fler portioner">＋</button></div><p class="notice">Grundrecept: ${r.servings} portioner. Vi räknar om tydliga mängder i början av ingrediensraderna. Kontrollera oklara mängder. Tider och temperaturer ändras inte.</p><div class="recipe-columns"><section><h3>Ingredienser</h3><div id="ingredient-list"></div></section><section><h3>Gör så här</h3>${r.steps.map((s,i)=>`<label class="check"><input type="checkbox"><span><strong>${i+1}.</strong> ${esc(s)}</span></label>`).join('')}</section></div>${r.notes?`<h3>Familjens anteckningar</h3><div class="notes">${esc(r.notes)}</div>`:''}<div class="detail-actions"><button id="cook" aria-pressed="false">Starta matlagningsläge</button><button id="favorite">${r.favorite?'♥ Favorit':'♡ Gör till favorit'}</button><button id="edit">Redigera</button><button id="print">Skriv ut</button><button id="delete">Radera</button></div>${safeUrl(r.source)?`<a class="source" href="${esc(safeUrl(r.source))}" target="_blank" rel="noopener noreferrer">Öppna originalreceptet ↗</a>`:''}<p id="detail-status" role="status"></p>`;
+ const ingredients=()=>{const v=Number($('#portion').value);if(!Number.isFinite(v)||v<=0||v>1000)return;const checked=[...$('#ingredient-list').querySelectorAll('input')].map(x=>x.checked);$('#ingredient-list').innerHTML=r.ingredients.map((s,i)=>`<label class="check"><input type="checkbox" ${checked[i]?'checked':''}><span>${esc(scale(s,v/r.servings))}</span></label>`).join('');};ingredients();
+ $('#portion').addEventListener('input',ingredients);$('#minus').onclick=()=>{$('#portion').value=Math.max(.1,Number($('#portion').value)-1);ingredients();};$('#plus').onclick=()=>{$('#portion').value=Math.min(1000,Number($('#portion').value)+1);ingredients();};
+ $('#cook').onclick=async()=>{cooking=!cooking;$('#detail').classList.toggle('cooking',cooking);$('#cook').setAttribute('aria-pressed',String(cooking));$('#cook').textContent=cooking?'Avsluta matlagningsläge':'Starta matlagningsläge';if(cooking)await requestWake();else await stopCooking();};
+ $('#edit').onclick=()=>{d.close();edit(r);};$('#print').onclick=()=>window.print();$('#favorite').onclick=async()=>{try{const saved=await api('save',{recipe:{...r,favorite:!r.favorite}});await load();show(saved);}catch(e){$('#detail-status').textContent=e.message;}};
+ $('#delete').onclick=async()=>{if(!confirm(`Radera ”${r.title}”?`))return;try{await api('delete',{id:r.id,revision:r.revision});d.close();await load();}catch(e){$('#detail-status').textContent=e.message;}};
+ $('.detail-image')?.addEventListener('error',e=>e.target.remove());if(!d.open)d.showModal();
+}
+$('#login-form').onsubmit=async e=>{e.preventDefault();try{const data=await api('login',{password:e.target.password.value});csrf=data.csrf;e.target.reset();await load();authenticated(true);message('');}catch(e){message(e.message);}};
+$('#logout').onclick=async()=>{try{await api('logout',{});try{for(const key of Object.keys(localStorage))if(key.startsWith('realfood:draft:'))localStorage.removeItem(key);}catch{}location.reload();}catch(e){message(e.message);}};
+$('#add').onclick=()=>edit();$('#search').oninput=render;$('#filters').onclick=e=>{const b=e.target.closest('[data-filter]');if(b){filter=b.dataset.filter;render();}};
+$('#cards').onclick=e=>{const card=e.target.closest('[data-id]');if(card)show(recipes.find(r=>r.id===card.dataset.id));};$('#cards').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){const c=e.target.closest('[data-id]');if(c){e.preventDefault();c.click();}}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-close]');if(b)document.getElementById(b.dataset.close).close();});
+$('#import').onclick=async()=>{const url=$('#import-url').value;if(!safeUrl(url)){$('#import-status').textContent='Ange en giltig webblänk.';return;}if($('#recipe-form').elements.title.value&&!confirm('Ersätt de ifyllda receptfälten med importen?'))return;$('#import').disabled=true;$('#import-status').textContent='Läser receptet…';try{const r=await api('import',{url});fill(r);draftSave();if(editing)editing.yieldOriginal=r.yieldOriginal;$('#import-status').textContent='Receptet är hämtat. Granska uppgifterna före sparande.'+(!r.servings?` Kontrollera portionerna: originalet anger ”${r.yieldOriginal||'saknas'}”.`:'')+(!r.image?' Bild saknas, lägg till en bildlänk.':'');}catch(e){$('#import-status').textContent=e.message;$('#recipe-form').elements.source.value=url;}finally{$('#import').disabled=false;}};
+$('#recipe-form').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target);const r={...(editing||{favorite:false}),...Object.fromEntries(f)};r.servings=Number(r.servings);for(const k of ['ingredients','steps','categories'])r[k]=r[k].split(k==='categories'?',':'\n').map(s=>s.trim()).filter(Boolean);$('#save').disabled=true;try{const result=await api('save',{recipe:r});try{localStorage.removeItem(draftKey(editing?.id));}catch{}$('#editor').close();await load();show(result);}catch(e){$('#save-status').textContent=e.message;}finally{$('#save').disabled=false;}};
+$('#export').onclick=()=>{const a=document.createElement('a');const url=URL.createObjectURL(new Blob([JSON.stringify({version:1,recipes},null,2)],{type:'application/json'}));a.href=url;a.download='familjens-receptbok.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+try{const s=await api('session');csrf=s.csrf;authenticated(s.authenticated);if(s.authenticated)await load();}catch(e){message(e.message);}
