@@ -29,7 +29,8 @@ jobs:
           set -eu
           umask 077
           root=/customers/a/2/c/ce8ick9k1/webroots/www
-          base=/customers/a/2/c/ce8ick9k1/realfood-backups
+          base="$HOME/realfood-backups"
+          case "$base" in */webroots/*) echo "Refusing web-accessible backup location"; exit 1;; esac
           test -f "$root/wp-includes/version.php"
           test -f "$root/wp-config.php"
           mkdir -p "$base"
