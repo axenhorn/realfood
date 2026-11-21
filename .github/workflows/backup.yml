@@ -44,7 +44,7 @@ jobs:
           tar -czf "$dest/wordpress-files.tar.gz" -- "$@"
           gzip -t "$dest/wordpress-files.tar.gz"
           mkdir "$dest/restore-test"
-          tar -xzf "$dest/wordpress-files.tar.gz" -C "$dest/restore-test"
+          tar -xpzf "$dest/wordpress-files.tar.gz" -C "$dest/restore-test"
           tar -dzf "$dest/wordpress-files.tar.gz" -C "$dest/restore-test"
           test -f "$dest/restore-test/wp-config.php"
           test -f "$dest/restore-test/wp-includes/version.php"
