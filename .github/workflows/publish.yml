@@ -1,15 +1,21 @@
 name: Real Food till One.com
 on:
-  pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      target:
+        description: Miljö att publicera till
+        required: true
+        type: choice
+        default: staging
+        options:
+          - staging
+          - production
 
 permissions:
   contents: read
 
 concurrency:
-  group: real-food-${{ github.ref }}
+  group: real-food-publish
   cancel-in-progress: false
 
 jobs:
@@ -22,16 +28,10 @@ jobs:
           python3 -m py_compile deploy/publish.py
           find wp-content -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
           python3 deploy/publish.py --check
-  staging:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+  publish:
+    if: github.ref == 'refs/heads/main'
     needs: check
     uses: ./.github/workflows/onecom.yml
     with:
-      target: staging
-    secrets: inherit
-  production:
-    needs: staging
-    uses: ./.github/workflows/onecom.yml
-    with:
-      target: production
+      target: ${{ inputs.target }}
     secrets: inherit
