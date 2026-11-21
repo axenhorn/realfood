@@ -1,5 +1,6 @@
 """Publish project-owned components by switching their release symlinks over SFTP."""
 import os
+import posixpath
 import re
 import stat
 import sys
@@ -47,6 +48,11 @@ def switch(sftp, path, target):
         raise
 
 
+def managed_target(live, target, store):
+    resolved = PurePosixPath(posixpath.normpath(posixpath.join(str(live.parent), target)))
+    return resolved != store and resolved.is_relative_to(store)
+
+
 def verify(url, expected):
     with urlopen(url, timeout=25) as response:
         if response.geturl() != url or response.read(len(expected) + 1) != expected:
@@ -82,7 +88,7 @@ def publish(sftp, parts):
             if not stat.S_ISLNK(existing):
                 raise ValueError(f"Existing unmanaged path: {live}")
             original = sftp.readlink(str(live))
-            if not PurePosixPath(original).is_relative_to(store) or ".." in PurePosixPath(original).parts:
+            if not managed_target(live, original, store):
                 raise ValueError(f"Unmanaged symbolic link: {live}")
             previous[part] = original
         # Themes and plugins can have the same WordPress slug.
@@ -102,7 +108,10 @@ def publish(sftp, parts):
     changed = []
     try:
         for part in parts:
-            switch(sftp, content / part, str(release / part.replace("/", "--")))
+            live = content / part
+            # SFTP is chrooted: absolute SFTP paths are not web-server paths.
+            target = posixpath.relpath(str(release / part.replace("/", "--")), str(live.parent))
+            switch(sftp, live, target)
             changed.append(part)
         for part in parts:
             verify(f"{base}/wp-content/{part}/{marker_name}?v={release.name}", stamp)
