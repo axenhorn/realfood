@@ -53,7 +53,7 @@ Planeringsunderlag, inte implementerat. Granskningen avser representativa recept
 1. Brödsmulor, tydligt receptnamn, riktiga betyg med antal röster och namngiven upphovsperson.
 2. Kort introduktion, ”Gå till recept” och huvudbild nära rubriken.
 3. Förberedelsetid, aktiv tid, väntetid/tillagningstid och total tid tydligt åtskilda där relevant; portioner och metod.
-4. Receptkort med portionsjustering, grupperade ingredienser, numrerade steg och utskrift.
+4. Receptkort med portionsjustering, grupperade ingredienser, numrerade steg. Ingen separat utskriftsknapp.
 5. Egna provlagade tips, byten, förberedelse/förvaring och vanliga frågor när de faktiskt hjälper. Längre metodförklaringar läggs i länkade guider.
 6. Tydlig betygsättning utan kommentarer; passande tillbehör och 3–4 relaterade recept.
 - En huvudrubrik, läsbar mobiltypografi och tangentbordsåtkomst.
@@ -66,7 +66,7 @@ Planeringsunderlag, inte implementerat. Granskningen avser representativa recept
 - Startsidan ska tidigt visa matbilder, sökning och ingångar till metoderna; minska utrymmet för den nuvarande stora textintroduktionen.
 - Skapa innehållsrika ämnessidor för de tre metoderna. Bygg underkategorier efter råvara först när samlingen motiverar det.
 - Exempel på innehållssamband: Sous vide → kycklingrecept → temperaturguide → passande sås/tillbehör. Länka även tillbaka från guiden.
-- Receptkort: bild, namn, tid och verkligt betyg när sådant finns.
+- Receptkort i samtliga grids: bild, namn, kort ingress, tid samt verkligt betyg och antal röster när sådana finns.
 - Filter efter metod och råvara först; tidsfilter senare med begriplig hantering av lång passiv tillagning.
 - Separera valda indexerbara ämnessidor från tillfälliga filter/sökresultat; utred canonical/noindex innan filter lanseras.
 - Bevara fungerande befintliga URL:er även om navigationen ändras.
@@ -75,7 +75,7 @@ Planeringsunderlag, inte implementerat. Granskningen avser representativa recept
 P1: huvudbild, betyg utan kommentarer, tidsöversikt, receptkort och relevanta internlänkar.
 P2: startsida med receptfokus, sökning, tre ämnessidor och kopplade guider.
 P3: avprickning, matlagningsläge och senare koppling till familjeappen.
-- Före lansering: kontrollera båda receptformaten, bildladdning, mobil, portionsjustering, utskrift, betyg och Recipe-data.
+- Före lansering: kontrollera båda receptformaten, bildladdning, mobil, portionsjustering, betyg och Recipe-data.
 - Verifiera att bara avsedd publik version indexeras och följ upp landningssidor, klick och sökfrågor i Search Console efter lansering.
 
 ## Genomfört i testmiljön 2026-11-22 – tema 0.2.0
@@ -87,3 +87,13 @@ P3: avprickning, matlagningsläge och senare koppling till familjeappen.
 - Kvar: betyg utan kommentarer (nuvarande WPRM-inställning öppnar recensionsmodal, ej färdig lösning), betyg/upphovsperson vid rubriken, kort ingress och tidsöversikt. Befintliga betygsinställningar lämnades oförändrade.
 - Kvar: finslipa matchningen av relaterade recept; breda kategorier ger ibland svaga samband. Se över dubblett av Gå till recept i WPRM-innehåll och små bildoriginal.
 - Ingen produktionspublicering gjord i detta steg.
+
+## Beslut 2026-11-22 – receptkort och utskrift
+Planerat efter Christophers önskemål; ännu inte implementerat.
+- Ta bort alla knappar/länkar för ”Printa recept” och ”Skriv ut receptet”, både före receptet och inne i receptkortet, i båda receptformaten. Detta ersätter det tidigare kravet på en utskriftsknapp.
+- Använd samma informationsstruktur för varje receptkort i alla grids: startsida, alla recept, ämnes-/kategorisidor, sökresultat och relaterade recept.
+- Under bilden och receptnamnet: kort ingress på cirka 1–2 rader, betyg med antal röster samt tydligt märkt tillagningstid/total tid. Uppgifterna hör till varje receptkort, inte till hela griden.
+- Visa ”Inga betyg ännu” när röster saknas. Hämta befintliga riktiga betyg från respektive receptformat; fabricera inga värden.
+- För sous vide, BBQ och rökning: prioritera total tid för planering och skilj den från aktiv arbetstid där uppgifterna finns. Märk aldrig enbart aktiv tid som total tid.
+- Saknad tid ska inte visas som 0 minuter. Saknad ingress behöver kompletteras redaktionellt; använd inte orelaterad eller avklippt ingredienstext.
+- Säkerställ läsbar och kompakt utformning i mobil och konsekvent presentation mellan båda receptformaten.
