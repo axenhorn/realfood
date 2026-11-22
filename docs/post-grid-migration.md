@@ -30,3 +30,17 @@ Alla recept visar både vanliga inlägg (exempel /beef-jerky/) och äldre recipe
 ## Produktion
 
 Gör en separat manuell publicering efter godkända tester. Kopiera inte stagingdatabasen över produktionen. Bevara receptens URL:er. Fullständigt återställningsprov med databas och applikationsstart återstår inför större migreringar. Filbackup och isolerad filåterläsning är redan verifierade enligt README.
+
+## Verifierad konfiguration och införande
+
+WordPress-admin kontrollerad 2026-11-21:
+- Grid 464: posttyper wprm_recipe och recipe, endast publish, datum fallande, 20 per sida, inga valda taxonomifilter eller inkluderade/exkluderade ID:n. Vanlig paginering.
+- Grid 433: enbart recipe, 12 per sida, slumpmässig sortering, inga valda taxonomifilter eller inkluderade/exkluderade ID:n. Vanlig paginering. Namnet Sous Vide innebär alltså inte ett kategorifilter.
+- Admin visar totalt sex gridkonfigurationer: 1777, 464, 462 (utkast), 433, 353 och 339. Användningen av de återstående konfigurationerna behöver fortfarande granskas.
+
+Real Food 0.1.0 har publicerats och aktiverats i staging, körning [44943958715](https://github.com/axenhorn/realfood/actions/runs/44943958715). Sidan 465 använder nu `[real_food_recipes collection="all"]`; originalet var `[post_grid id="464"]`.
+Första kontrollen visade 20 kort på sida 1 och 12 på sida 2 samt noindex. Desktoputseendet granskades. Detta är inte ett fullständigt funktionstest av alla länkar eller mobilvyn.
+
+Komponenten använder WPRM:s parent_post_id för att länka interna receptposter till publicerade föräldrasidor. Originalets posttyper ska bevaras; den tidigare observationen om vanliga inlägg avsåg länkarnas mål, inte gridens posttypurval.
+
+Kvar: migrera sidan 91, verifiera alla beroenden inklusive widgetar, testa mobil och återgång, inaktivera Post Grid i staging och kör kontroller utan det. Ingen produktionspublicering eller inaktivering av Post Grid har gjorts.
