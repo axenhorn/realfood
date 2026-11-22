@@ -1,6 +1,6 @@
 /*
 Theme Name: Real Food by Axenhorn
-Version: 0.2.0
+Version: 0.3.0
 Description: Ett lätt recepttema med fokus på mat, läsbarhet och befintliga recept.
 Text Domain: real-food
 */
@@ -59,3 +59,15 @@ body .rf-recipes{gap:28px;grid-template-columns:repeat(3,minmax(0,1fr))}body .rf
 @media(max-width:760px){.rf-related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
 @media(max-width:380px){.rf-related-grid{grid-template-columns:1fr}}
 @media print{.rf-related,.rf-recipe-intro{display:none!important}}
+
+/* Consistent supporting information in every recipe grid. */
+.rf-card-details{font-size:15px;line-height:1.5;color:var(--muted)}
+body .rf-card-details p{margin:6px 0}
+body .rf-card-details .rf-card-summary{margin:0 0 12px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.rf-card-rating{color:var(--ink)}
+.rf-card-rating span{color:var(--clay)}
+body .rf-recipe h2{margin-bottom:12px}
+.rf-related-grid article,.archive-grid article{min-width:0}
+.rf-card-time{font-size:14px}
+/* Remove recipe print actions from both supported plugin templates. */
+body .wprm-recipe-print,body .wpurp-recipe-print-button{display:none!important}
