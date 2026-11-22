@@ -77,3 +77,13 @@ P2: startsida med receptfokus, sökning, tre ämnessidor och kopplade guider.
 P3: avprickning, matlagningsläge och senare koppling till familjeappen.
 - Före lansering: kontrollera båda receptformaten, bildladdning, mobil, portionsjustering, utskrift, betyg och Recipe-data.
 - Verifiera att bara avsedd publik version indexeras och följ upp landningssidor, klick och sökfrågor i Search Console efter lansering.
+
+## Genomfört i testmiljön 2026-11-22 – tema 0.2.0
+- Huvudbild och fungerande Gå till recept-länk för båda receptformaten.
+- Upp till fyra serverrenderade relaterade recept, rangordnade efter gemensamma etiketter och kategorier. Utesluter aktuellt recept, utkast, lösenordsskyddade sidor och interna receptposter.
+- Manuell stagingpublicering lyckades: Actions 45042846690, kod 2074ef89dd9d7578a8af005bc18964f25adf22b6. PHP-kontroll ingick.
+- Verifierat Beef Jerky och Inlagd jalapeno: huvudbild laddas, genväg når rätt receptkort, relaterade länkar visas. Vid 390 px: innehållsbredd 375 px, ingen horisontell överströmning.
+- Beef Jerky visar fortsatt 4.84/6 röster och samma aggregateRating. Inga testbetyg har skickats. Staging har fortsatt noindex.
+- Kvar: betyg utan kommentarer (nuvarande WPRM-inställning öppnar recensionsmodal, ej färdig lösning), betyg/upphovsperson vid rubriken, kort ingress och tidsöversikt. Befintliga betygsinställningar lämnades oförändrade.
+- Kvar: finslipa matchningen av relaterade recept; breda kategorier ger ibland svaga samband. Se över dubblett av Gå till recept i WPRM-innehåll och små bildoriginal.
+- Ingen produktionspublicering gjord i detta steg.
