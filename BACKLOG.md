@@ -117,3 +117,6 @@ Planerat efter Christophers önskemål; ännu inte implementerat.
 - Behåll omdirigeringarna långsiktigt, minst ett år och gärna permanent. Följ 404, indexering och organisk trafik i Search Console. URL-byte kan ge tillfälliga positionsförändringar.
 - Rotadresser väljs för enkelhet och enhetlighet; de ger inte i sig en garanterad rankingfördel mot /recipe/.
 - Referenser: https://developers.google.com/search/docs/crawling-indexing/url-structure och https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes
+
+### URL-inventering klar 2026-11-22
+Underlag finns i [docs/url-migration/README.md](docs/url-migration/README.md): 32 recept, 26 adressbyten, 18 publika titeländringar och 1 separat WPRM-namn. 40 explicita 301-regler omfattar även äldre alternativa rotadresser. Alla 25 äldre recept visas redan på två URL-varianter med samma recept-ID och canonical till /recipe/. Inga kollisioner mot 11 publicerade sidor eller mellan målen. Befintliga redirect-regler, utkast och Search Console återstår att kontrollera. Ingen titel eller URL ändrad ännu. Testmiljön behöver permalänkar före realistiska migreringstester.
