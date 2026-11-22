@@ -101,7 +101,9 @@ function rf_theme_related_recipes($post_id) {
   $id = $item['post']->ID;
   echo '<article><a href="' . esc_url(get_permalink($id)) . '">';
   if ($item['data']['image']) { echo wp_get_attachment_image($item['data']['image'], 'medium_large', false, array('loading'=>'lazy')); }
-  echo '<h3>' . esc_html(get_the_title($id)) . '</h3></a></article>';
+  echo '<h3>' . esc_html(get_the_title($id)) . '</h3></a>';
+  if (function_exists('rf_card_details_html')) { echo rf_card_details_html($id); }
+  echo '</article>';
  }
  echo '</div></section>';
 }
