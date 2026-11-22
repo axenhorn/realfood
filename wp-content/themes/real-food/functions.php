@@ -18,12 +18,23 @@ add_action('wp_before_admin_bar_render', function () {
  global $wp_admin_bar;
  $wp_admin_bar->remove_node('comments');
 });
+/**
+ * Resolve pages through WordPress so plain and pretty permalinks both work,
+ * including installations in a staging subdirectory.
+ */
+function rf_theme_page_url($slug) {
+ $page = get_page_by_path($slug, OBJECT, 'page');
+ if ($page && 'publish' === get_post_status($page)) {
+  return get_permalink($page);
+ }
+ return home_url('/');
+}
 function rf_theme_navigation() {
- echo '<a href="'.esc_url(home_url('/alla-recept/')).'">Alla recept</a>';
- echo '<a href="'.esc_url(home_url('/sous-vide/')).'">Sous vide</a>';
+ echo '<a href="'.esc_url(rf_theme_page_url('alla-recept')).'">Alla recept</a>';
+ echo '<a href="'.esc_url(rf_theme_page_url('sous-vide')).'">Sous vide</a>';
  $term = get_term_by('name', 'Grillat', 'category');
  if ($term && !is_wp_error($term)) {
   echo '<a href="'.esc_url(get_term_link($term)).'">Grillat & BBQ</a>';
  }
- echo '<a href="'.esc_url(home_url('/sous-vide-temperaturer-och-tider/')).'">Temperaturer & tider</a>';
+ echo '<a href="'.esc_url(rf_theme_page_url('sous-vide-temperaturer-och-tider')).'">Temperaturer & tider</a>';
 }
