@@ -22,7 +22,9 @@
  <article <?php post_class('article'); ?>>
  <div class="breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">Hem</a> / <a href="<?php echo esc_url(rf_theme_page_url('alla-recept')); ?>">Recept & guider</a></div>
  <header class="article-header"><p class="eyebrow">REAL FOOD BY AXENHORN</p><h1><?php the_title(); ?></h1></header>
+ <?php $rf_recipe = rf_theme_recipe_data(get_the_ID()); rf_theme_recipe_intro(get_the_ID(), $rf_recipe); ?>
  <div class="article-content"><?php the_content(); wp_link_pages(); ?></div>
+ <?php if ($rf_recipe) { rf_theme_related_recipes(get_the_ID()); } ?>
  </article>
 <?php endwhile; elseif (is_404()) : ?>
  <section class="article"><h1>Sidan kunde inte hittas.</h1><p>Hitta något gott i receptsamlingen.</p><a class="button" href="<?php echo esc_url(rf_theme_page_url('alla-recept')); ?>">Alla recept</a></section>
