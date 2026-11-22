@@ -8,7 +8,7 @@ add_action('after_setup_theme', function () {
  register_nav_menus(array('primary'=>'Huvudmeny'));
 });
 add_action('wp_enqueue_scripts', function () {
- wp_enqueue_style('real-food-theme', get_stylesheet_uri(), array(), '0.1.0');
+ wp_enqueue_style('real-food-theme', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
 });
 add_filter('comments_open', '__return_false', 100);
 add_filter('pings_open', '__return_false', 100);
