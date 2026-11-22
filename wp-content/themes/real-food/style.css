@@ -1,6 +1,6 @@
 /*
 Theme Name: Real Food by Axenhorn
-Version: 0.1.1
+Version: 0.2.0
 Description: Ett lätt recepttema med fokus på mat, läsbarhet och befintliga recept.
 Text Domain: real-food
 */
@@ -46,3 +46,16 @@ body .rf-recipes{gap:28px;grid-template-columns:repeat(3,minmax(0,1fr))}body .rf
  .article-content .wprm-recipe-instruction,.article-content .wpurp-recipe-instruction{break-inside:avoid}
  .article-content table{display:table;overflow:visible}
 }
+
+.rf-recipe-intro{max-width:900px;margin:0 auto 32px}
+.rf-recipe-intro .button{margin-top:0}
+.rf-main-image{margin:24px 0 0}
+.rf-main-image img{display:block;width:100%;height:auto;max-height:620px;object-fit:contain;background:var(--paper)}
+.rf-related{margin:56px auto 0;padding-top:24px;border-top:1px solid var(--line);max-width:900px}
+.rf-related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.rf-related-grid a{text-decoration:none}
+.rf-related-grid img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.rf-related-grid h3{font-size:23px;margin:12px 0}
+@media(max-width:760px){.rf-related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+@media(max-width:380px){.rf-related-grid{grid-template-columns:1fr}}
+@media print{.rf-related,.rf-recipe-intro{display:none!important}}
