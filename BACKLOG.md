@@ -69,7 +69,7 @@ Planeringsunderlag, inte implementerat. Granskningen avser representativa recept
 - Receptkort i samtliga grids: bild, namn, kort ingress, tid samt verkligt betyg och antal röster när sådana finns.
 - Filter efter metod och råvara först; tidsfilter senare med begriplig hantering av lång passiv tillagning.
 - Separera valda indexerbara ämnessidor från tillfälliga filter/sökresultat; utred canonical/noindex innan filter lanseras.
-- Bevara fungerande befintliga URL:er även om navigationen ändras.
+- Bevara fungerande befintliga URL:er tills den separata URL-migreringen nedan är kartlagd, testad och redo.
 
 ### Prioritering och verifiering
 P1: huvudbild, betyg utan kommentarer, tidsöversikt, receptkort och relevanta internlänkar.
@@ -97,3 +97,23 @@ Planerat efter Christophers önskemål; ännu inte implementerat.
 - För sous vide, BBQ och rökning: prioritera total tid för planering och skilj den från aktiv arbetstid där uppgifterna finns. Märk aldrig enbart aktiv tid som total tid.
 - Saknad tid ska inte visas som 0 minuter. Saknad ingress behöver kompletteras redaktionellt; använd inte orelaterad eller avklippt ingredienstext.
 - Säkerställ läsbar och kompakt utformning i mobil och konsekvent presentation mellan båda receptformaten.
+
+## Receptkort genomförda i staging 2026-11-22 – tema 0.3.0, plugin 0.2.0
+- Gemensam visning av kort ingress, verkligt betyg/antal röster och tider i receptgrids, relaterade recept och recept i arkiv/sökresultat.
+- Ingress hämtas från receptets sammanfattning/beskrivning, annars manuellt utdrag. Saknad ingress behöver kompletteras; 8 av första sidans 20 recept saknar sådan text.
+- WPRM visar befintlig total tid. Äldre recept behåller separata etiketter för förberedelse, tillagning och väntetid eftersom fritexten inte säkert kan summeras. Saknade tider visas inte som noll.
+- Utskriftsknappar dolda i båda receptformaten. Betygsinmatning utan kommentarer är fortfarande en separat kvarstående punkt.
+- Actions 45045100185 lyckades (0368552d87e91c5775249c5aead56e2a3cda4858); PHP-kontroll godkänd. Verifierat 20/20 kort med detaljblock på första listsidan, 4 relaterade detaljblock på både Beef Jerky och Inlagd jalapeno, inga synliga utskriftsknappar på dessa. Mobil 390 px: innehåll 375 px, ingen horisontell överströmning.
+- Driftfynd: SFTP-publicering byter filer via symlänkar men PHP körde cachad äldre kod. One.coms knapp för cacherensning misslyckades. Att spara exakt den redan publicerade koden via WordPress filredigerare för real-food.php, functions.php och index.php löste detta genom kodcache-invalidering. Förbättra deployflödet med verifiering av körd kodversion och säker cacheinvalidering innan produktion; inga automatiska körningar ska införas.
+
+## Enhetliga receptadresser och titlar – plan 2026-11-22
+- Christopher vill ta bort onödigt ”Recept” ur recepttitlar och förenkla blandningen av adresser direkt under domänen och under /recipe/.
+- Rekommenderad målstruktur: https://www.axenhorn.se/<receptnamn>/, exempel /julskinka-sous-vide/. Behåll fungerande korta adresser som /beef-jerky/.
+- Titel och URL-slug hanteras separat: en titeländring på publicerat innehåll ska inte automatiskt utlösa adressbyte. Uppdatera även receptpluginets namn om det annars ger avvikande rubriker i kort och receptdata.
+- Först inventera samtliga publika receptadresser, befintliga omdirigeringar, internlänkar och Search Console-data. Ta fram en explicit gammal → slutlig ny URL-tabell och kontrollera kollisioner med sidor, guider, kategorier och andra recept.
+- Genomför URL-migrering som ett avgränsat steg, skilt från temalanseringen så effekter kan följas upp. Ingen URL-migrering genomförd ännu.
+- Varje ändrad adress ska ge permanent serverbaserad 301 direkt till motsvarande slutliga receptadress. Äldre redirect-källor ska också peka direkt till slutmålet, utan kedjor, loopar eller generell omdirigering till startsidan.
+- Uppdatera interna länkar, canonical, sitemap, Recipe-data och delningsmetadata till slutadresserna. Kontrollera gamla URL:ers 301 och nya URL:ers 200 samt att innehåll och betyg bevaras.
+- Behåll omdirigeringarna långsiktigt, minst ett år och gärna permanent. Följ 404, indexering och organisk trafik i Search Console. URL-byte kan ge tillfälliga positionsförändringar.
+- Rotadresser väljs för enkelhet och enhetlighet; de ger inte i sig en garanterad rankingfördel mot /recipe/.
+- Referenser: https://developers.google.com/search/docs/crawling-indexing/url-structure och https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes
