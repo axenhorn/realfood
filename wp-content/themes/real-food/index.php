@@ -32,7 +32,7 @@
  <section class="archive"><h1><?php if (is_search()) { printf('Sökresultat för: %s', esc_html(get_search_query())); } else { the_archive_title(); } ?></h1>
  <?php get_search_form(); ?>
  <div class="archive-grid"><?php while (have_posts()) : the_post(); ?>
- <article><a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('medium_large', array('loading'=>'lazy')); ?><h2><?php the_title(); ?></h2></a><?php the_excerpt(); ?></article>
+ <article><a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('medium_large', array('loading'=>'lazy')); ?><h2><?php the_title(); ?></h2></a><?php if (function_exists('rf_card_details_html') && rf_card_details(get_the_ID())) { echo rf_card_details_html(get_the_ID()); } else { the_excerpt(); } ?></article>
  <?php endwhile; ?></div><?php if (!have_posts() && !get_query_var('paged')) : ?><p class="screen-reader-text">Slut på resultat.</p><?php endif; the_posts_pagination(); ?></section>
 <?php endif; ?>
 </main>
