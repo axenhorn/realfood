@@ -1,6 +1,6 @@
 /*
 Theme Name: Real Food by Axenhorn
-Version: 0.1.0
+Version: 0.1.1
 Description: Ett lätt recepttema med fokus på mat, läsbarhet och befintliga recept.
 Text Domain: real-food
 */
@@ -14,3 +14,35 @@ body .rf-recipes{gap:28px;grid-template-columns:repeat(3,minmax(0,1fr))}body .rf
 @media(max-width:760px){.site-header{align-items:flex-start;flex-direction:column;gap:22px}.site-header nav{gap:12px 20px}.hero{padding:45px 0}.routes{grid-template-columns:1fr}.routes>a{padding:25px 0}.routes>a+a{border-left:0;border-top:1px solid var(--line)}body .rf-recipes,.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}body .rf-recipe h2{font-size:21px}.site-footer{align-items:flex-start;flex-direction:column}.article-content .alignright{float:none;margin:0 0 24px}.article-header h1{overflow-wrap:anywhere}}
 @media(max-width:440px){body .rf-recipes,.archive-grid{grid-template-columns:1fr}main{padding:0 20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Recipe cards: retain each plugin's markup, controls and structured data. */
+.article-content .wprm-recipe-container{scroll-margin-top:24px}
+.article-content .wprm-recipe{max-width:100%;padding:clamp(18px,4vw,36px);border:1px solid var(--line);background:#fff;color:var(--ink);font-family:inherit;font-size:18px;line-height:1.7}
+.article-content .wprm-recipe .wprm-recipe-name{font:400 clamp(28px,4vw,40px)/1.15 Georgia,serif;margin:0 0 18px}
+.article-content .wprm-recipe .wprm-recipe-header{font-family:Georgia,serif;font-size:26px;font-weight:400;letter-spacing:0;text-transform:none;margin:28px 0 16px}
+.article-content .wprm-recipe .wprm-recipe-group-name{font-size:20px;margin:20px 0 10px}
+.article-content .wprm-recipe-ingredient{padding:9px 0;border-bottom:1px solid var(--line)}
+.article-content .wprm-recipe-instruction{padding:8px 0 16px}
+.article-content .wprm-recipe-instruction-text p{margin:0 0 12px}
+.article-content .wprm-recipe-ingredient-notes{color:var(--muted)}
+.article-content .wprm-recipe-print,.article-content .wprm-recipe-jump{background:var(--clay)!important;color:#fff!important;border-color:var(--clay)!important;min-height:44px;padding:10px 18px!important}
+.article-content .wprm-recipe a:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.article-content .wpurp-container{line-height:1.75}
+.article-content .wpurp-recipe-ingredient{padding-top:8px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.article-content .wpurp-recipe-instruction{padding-top:8px;padding-bottom:16px}
+.article-content .wpurp-recipe-servings-changer{min-height:44px}
+@media(max-width:600px){
+ .article-content .wprm-container-float-right{float:none;margin:0 0 20px;max-width:100%}
+ .article-content .wprm-recipe-image img{max-width:100%;height:auto}
+ .article-content .wprm-recipe{font-size:17px}
+ .article-content .wprm-container-columns-spaced{flex-wrap:wrap;gap:16px}
+}
+@media print{
+ body{background:#fff;color:#000;font-size:11pt}
+ .site-header,.site-footer,.breadcrumb,.skip,.wprm-recipe-snippet,.wprm-template-chic-buttons,.wpurp-recipe-print-button{display:none!important}
+ main,.article,.article-header,.article-content{max-width:none;margin:0;padding:0}
+ .article-header h1{font-size:26pt}
+ .article-content .wprm-recipe{padding:16px;border:1px solid #bbb;font-size:11pt}
+ .article-content .wprm-recipe-instruction,.article-content .wpurp-recipe-instruction{break-inside:avoid}
+ .article-content table{display:table;overflow:visible}
+}
