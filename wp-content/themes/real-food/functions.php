@@ -59,6 +59,7 @@ function rf_theme_recipe_data($post_id) {
 function rf_theme_recipe_intro($post_id, $data) {
  if (!$data) { return; }
  echo '<div class="rf-recipe-intro">';
+ if (function_exists('rf_card_details_html')) { echo rf_card_details_html($post_id); }
  echo '<a class="button" href="#' . esc_attr($data['anchor']) . '">Gå till recept</a>';
  if ($data['image']) {
   echo '<figure class="rf-main-image">' . wp_get_attachment_image($data['image'], 'large', false, array(
@@ -111,7 +112,8 @@ function rf_theme_related_recipes($post_id) {
 
 /** General-page design; individual recipe layout is a separate iteration. */
 add_filter('body_class', function ($classes) {
- if (!is_singular() || !rf_theme_recipe_data(get_queried_object_id())) { $classes[] = 'rf-studio'; }
+ $classes[] = 'rf-studio';
+ if (is_singular() && rf_theme_recipe_data(get_queried_object_id())) { $classes[] = 'rf-studio-recipe'; }
  return $classes;
 });
 function rf_studio_search() {
