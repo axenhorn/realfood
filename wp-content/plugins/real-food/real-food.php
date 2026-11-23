@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Real Food
  * Description: Serverrenderade receptlistor för Real Food by Axenhorn.
- * Version: 0.2.0
+ * Version: 0.3.0
  */
 defined('ABSPATH') || exit;
 
@@ -162,4 +162,166 @@ function rf_card_details_html($post_id) {
     $html .= '</p>';
     foreach ($data['times'] as $time) { $html .= '<p class="rf-card-time">' . esc_html($time) . '</p>'; }
     return $html . '</div>';
+}
+
+/** Explicit staging-only URL migration. */
+function rf_url_map() {
+ return array(
+1723 => array('old'=>'beef-jerky','new'=>'beef-jerky','type'=>'post','title'=>'Äkta Beef Jerky'),
+320 => array('old'=>'recept-julskinka-sous-vide','new'=>'julskinka-sous-vide','type'=>'post','title'=>'Perfekt julskinka – Sous Vide'),
+916 => array('old'=>'flankstek-sous-vide','new'=>'flankstek-sous-vide','type'=>'post','title'=>'Mör och saftig Flankstek Sous Vide'),
+868 => array('old'=>'flapsteak-sous-vide','new'=>'flapsteak-sous-vide','type'=>'post','title'=>'Mör och saftig Flap steak Sous Vide'),
+847 => array('old'=>'blue-cheese-dipp-en-amerikansk-klassiker','new'=>'blue-cheese-dipp-en-amerikansk-klassiker','type'=>'post','title'=>'Blue Cheese Dipp – En Amerikansk klassiker'),
+838 => array('old'=>'kycklingvingar-med-honung-och-vitlok-sous-vide','new'=>'kycklingvingar-med-honung-och-vitlok-sous-vide','type'=>'post','title'=>'Kycklingvingar med honung och vitlök – Sous Vide'),
+824 => array('old'=>'pilgrimsmusslor-sous-vide','new'=>'pilgrimsmusslor-sous-vide','type'=>'post','title'=>'Perfekta pilgrimsmusslor – Sous Vide'),
+753 => array('old'=>'oxbringa-brisket-sous-vide','new'=>'oxbringa-brisket-sous-vide','type'=>'recipe','title'=>'Oxbringa (Brisket) Sous Vide'),
+741 => array('old'=>'trip-tip-sous-vide-barbecue','new'=>'trip-tip-sous-vide-barbecue','type'=>'recipe','title'=>'Trip Tip Sous Vide barbecue'),
+707 => array('old'=>'inlagd-chili-hela','new'=>'inlagd-chili-hela','type'=>'recipe','title'=>'Inlagd Chili (hela)'),
+684 => array('old'=>'egg-bites-sous-vide','new'=>'egg-bites-sous-vide','type'=>'recipe','title'=>'Egg Bites Sous Vide'),
+671 => array('old'=>'picanha-sous-vide','new'=>'picanha-sous-vide','type'=>'recipe','title'=>'Picanha Sous Vide'),
+649 => array('old'=>'habanerohotsauce','new'=>'habanerohotsauce','type'=>'recipe','title'=>'Habanero Hot Sauce'),
+498 => array('old'=>'recept-chokladmousse','new'=>'chokladmousse','type'=>'recipe','title'=>'Chokladmousse'),
+470 => array('old'=>'recept-tonfisk-sous-vide','new'=>'tonfisk-sous-vide','type'=>'recipe','title'=>'Saftig tonfisk – Sous Vide'),
+455 => array('old'=>'kalkonbrost-sous-vide','new'=>'kalkonbrost-sous-vide','type'=>'recipe','title'=>'Kalkonbröst – Sous Vide'),
+443 => array('old'=>'recept-lax-sous-vide','new'=>'lax-sous-vide','type'=>'recipe','title'=>'Saftig lax – Sous Vide'),
+429 => array('old'=>'lammracks-sous-vide','new'=>'lammracks-sous-vide','type'=>'recipe','title'=>'Lammracks – Sous Vide'),
+423 => array('old'=>'recept-majs-sous-vide','new'=>'majs-sous-vide','type'=>'recipe','title'=>'Majs – Sous Vide'),
+396 => array('old'=>'recept-bearnaisesas','new'=>'bearnaisesas','type'=>'recipe','title'=>'Bearnaisesås'),
+389 => array('old'=>'recept_hollandaisesas','new'=>'hollandaisesas','type'=>'recipe','title'=>'Hollandaisesås'),
+372 => array('old'=>'recept-graddsas-brunsas','new'=>'graddsas-brunsas','type'=>'recipe','title'=>'Riktig gräddsås (brunsås)'),
+324 => array('old'=>'recept-inlagd-rodlok','new'=>'inlagd-rodlok','type'=>'recipe','title'=>'Picklad rödlök'),
+284 => array('old'=>'pulled-pork-sous-vide','new'=>'pulled-pork-sous-vide','type'=>'recipe','title'=>'Pulled Pork – Sous Vide'),
+222 => array('old'=>'recept-kimchi','new'=>'kimchi','type'=>'recipe','title'=>'Kimchi'),
+156 => array('old'=>'recept-inlagd-jalapeno','new'=>'inlagd-jalapeno','type'=>'recipe','title'=>'Inlagd jalapeno'),
+148 => array('old'=>'pulled-pork','new'=>'pulled-pork','type'=>'recipe','title'=>'Pulled Pork'),
+130 => array('old'=>'recept-pico-de-gallo','new'=>'pico-de-gallo','type'=>'recipe','title'=>'Pico de Gallo'),
+125 => array('old'=>'mangosalsa','new'=>'mangosalsa','type'=>'recipe','title'=>'Mangosalsa'),
+112 => array('old'=>'recept-ceviche','new'=>'ceviche','type'=>'recipe','title'=>'Ceviche'),
+7 => array('old'=>'recept-citron-och-ingefaravatten','new'=>'citron-och-ingefaravatten','type'=>'recipe','title'=>'Citron- och ingefäravatten'),
+219 => array('old'=>'recept-inlagd-vitlok','new'=>'inlagd-vitlok','type'=>'recipe','title'=>'Picklad eller inlagd vitlök'),
+ );
+}
+
+function rf_url_stage() {
+    return untrailingslashit(home_url()) === 'https://www.axenhorn.se/stg_45384';
+}
+function rf_url_active() { return rf_url_stage() && get_option('rf_url_trial_active', false); }
+function rf_url_rules() {
+    if (!rf_url_active()) { return; }
+    foreach (rf_url_map() as $id => $row) {
+        add_rewrite_rule('^' . preg_quote($row['new'], '#') . '/?$', 'index.php?post_type=' . $row['type'] . '&p=' . $id, 'top');
+    }
+}
+add_action('init', 'rf_url_rules', 99);
+add_filter('post_type_link', function ($url, $post) {
+    $map = rf_url_map();
+    return rf_url_active() && $post->post_status === 'publish' && isset($map[$post->ID]) ? home_url('/' . $map[$post->ID]['new'] . '/') : $url;
+}, 99, 2);
+function rf_url_redirect_map() {
+    $rules = array();
+    foreach (rf_url_map() as $row) {
+        $target = '/' . $row['new'] . '/';
+        foreach (array('/' . $row['old'] . '/', '/recipe/' . $row['old'] . '/') as $source) {
+            if ($source !== $target) { $rules[$source] = $target; }
+        }
+    }
+    return $rules;
+}
+add_action('template_redirect', function () {
+    if (!rf_url_active() || !in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD'), true)) { return; }
+    $path = wp_parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $base = untrailingslashit(wp_parse_url(home_url(), PHP_URL_PATH));
+    if (strpos($path, $base . '/') !== 0) { return; }
+    $path = trailingslashit(substr($path, strlen($base)));
+    $rules = rf_url_redirect_map();
+    if (isset($rules[$path])) { wp_safe_redirect(home_url($rules[$path]), 301, 'Real Food'); exit; }
+}, -100);
+// Update rendered editorial links without modifying saved recipe content.
+add_filter('the_content', function ($content) {
+    if (!rf_url_active()) { return $content; }
+    $origins = array(home_url(), 'https://www.axenhorn.se', 'https://axenhorn.se', 'http://www.axenhorn.se', 'http://axenhorn.se');
+    foreach (rf_url_map() as $row) {
+        foreach (array('/' . $row['old'] . '/', '/recipe/' . $row['old'] . '/') as $path) {
+            foreach ($origins as $origin) {
+                foreach (array('"', "'") as $quote) {
+                    $content = str_replace('href=' . $quote . $origin . $path . $quote, 'href=' . $quote . esc_url(home_url('/' . $row['new'] . '/')) . $quote, $content);
+                }
+            }
+        }
+    }
+    return $content;
+}, 99);
+function rf_url_restore($backup) {
+    update_option('rf_url_trial_active', false);
+    $errors = array();
+    foreach ($backup['posts'] as $fields) {
+        $result = wp_update_post(wp_slash($fields), true);
+        if (is_wp_error($result)) { $errors[] = $result->get_error_message(); }
+    }
+    global $wp_rewrite;
+    $wp_rewrite->set_permalink_structure($backup['permalink']);
+    foreach (rf_url_map() as $row) { unset($wp_rewrite->extra_rules_top['^' . preg_quote($row['new'], '#') . '/?$']); }
+    flush_rewrite_rules();
+    return $errors;
+}
+add_action('admin_menu', function () {
+    if (rf_url_stage()) { add_management_page('Real Food URL-test', 'Real Food URL-test', 'manage_options', 'rf-url-trial', 'rf_url_admin'); }
+});
+function rf_url_admin() {
+    if (!rf_url_stage() || !current_user_can('manage_options')) { return; }
+    $errors = array(); $message = '';
+    if (isset($_POST['rf_url_action'])) {
+        check_admin_referer('rf_url_trial');
+        $action = sanitize_key(wp_unslash($_POST['rf_url_action']));
+        if ($action === 'restore' && ($backup = get_option('rf_url_trial_backup'))) {
+            $errors = rf_url_restore($backup);
+            if (!$errors) { $message = 'Ursprungliga titlar, slugs och permalänkar återställda.'; }
+        } elseif ($action === 'apply' && !rf_url_active()) {
+            global $wpdb, $wp_rewrite;
+            $posts = array(); $map = rf_url_map();
+            foreach ($map as $id => $row) {
+                $post = get_post($id);
+                if (!$post || $post->post_type !== $row['type'] || $post->post_status !== 'publish' || $post->post_name !== $row['old']) {
+                    $errors[] = 'Oväntat ursprungsläge för recept ' . $id; continue;
+                }
+                $collision = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND ID != %d AND post_type IN ('post','page','recipe','attachment') AND post_status NOT IN ('trash','auto-draft') LIMIT 1", $row['new'], $id));
+                if ($collision) { $errors[] = 'Adresskollision med post ' . $collision . ': ' . $row['new']; }
+                $posts[] = array('ID'=>$id, 'post_title'=>$post->post_title, 'post_name'=>$post->post_name);
+            }
+            $wprm = get_post(1749);
+            if (!$wprm || $wprm->post_type !== 'wprm_recipe') { $errors[] = 'Julskinkans WPRM-recept saknas.'; }
+            else { $posts[] = array('ID'=>1749, 'post_title'=>$wprm->post_title, 'post_name'=>$wprm->post_name); }
+            if (!$errors) {
+                $backup = array('created'=>gmdate('c'), 'permalink'=>get_option('permalink_structure'), 'posts'=>$posts);
+                if (!get_option('rf_url_trial_backup')) { add_option('rf_url_trial_backup', $backup, '', false); }
+                if (!get_option('rf_url_trial_backup')) { $errors[] = 'Kunde inte spara återställningsdata.'; }
+            }
+            if (!$errors) {
+                foreach ($posts as $fields) {
+                    $id = $fields['ID'];
+                    if (isset($map[$id])) { $fields['post_title'] = $map[$id]['title']; $fields['post_name'] = $map[$id]['new']; }
+                    else { $fields['post_title'] = preg_replace('/^Recept\s+/u', '', $fields['post_title']); $fields['post_title'] = ucfirst($fields['post_title']); }
+                    $result = wp_update_post(wp_slash($fields), true);
+                    if (is_wp_error($result) || get_post_field('post_name', $id) !== $fields['post_name']) { $errors[] = 'Kunde inte uppdatera post ' . $id; break; }
+                }
+                if ($errors) { $errors = array_merge($errors, rf_url_restore($backup)); }
+                else {
+                    update_option('rf_url_trial_active', true, false);
+                    $wp_rewrite->set_permalink_structure('/%postname%/');
+                    rf_url_rules(); flush_rewrite_rules();
+                    $message = 'URL-testet är aktiverat. 32 recept har kontrollerats och uppdaterats. Återställningsdata finns sparade.';
+                }
+            }
+        }
+    }
+    echo '<div class="wrap"><h1>Real Food URL-test</h1><p>Endast testmiljön. Produktionssajten påverkas inte.</p>';
+    if ($message) { echo '<div class="notice notice-success"><p>' . esc_html($message) . '</p></div>'; }
+    foreach ($errors as $error) { echo '<div class="notice notice-error"><p>' . esc_html($error) . '</p></div>'; }
+    echo '<p>Status: <strong>' . (rf_url_active() ? 'Aktiverat' : 'Ej aktiverat') . '</strong></p><form method="post">';
+    wp_nonce_field('rf_url_trial');
+    if (!rf_url_active()) { echo '<button class="button button-primary" name="rf_url_action" value="apply">Aktivera URL-test</button> '; }
+    if (get_option('rf_url_trial_backup')) { echo '<button class="button" name="rf_url_action" value="restore">Återställ ursprungsläget</button>'; }
+    echo '</form><h2>Receptens slutadresser</h2><ul>';
+    foreach (rf_url_map() as $row) { echo '<li><a href="' . esc_url(home_url('/' . $row['new'] . '/')) . '">' . esc_html($row['title']) . '</a></li>'; }
+    echo '</ul></div>';
 }
