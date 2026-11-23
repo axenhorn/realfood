@@ -107,3 +107,28 @@ function rf_theme_related_recipes($post_id) {
  }
  echo '</div></section>';
 }
+
+
+/** General-page design; individual recipe layout is a separate iteration. */
+add_filter('body_class', function ($classes) {
+ if (!is_singular() || !rf_theme_recipe_data(get_queried_object_id())) { $classes[] = 'rf-studio'; }
+ return $classes;
+});
+function rf_studio_search() {
+ echo '<form class="studio-search" role="search" method="get" action="' . esc_url(home_url('/')) . '"><label class="screen-reader-text" for="studio-query">Sök recept</label><input id="studio-query" name="s" type="search" placeholder="Vad vill du laga?" value="' . esc_attr(get_search_query()) . '"><input type="hidden" name="post_type[]" value="post"><input type="hidden" name="post_type[]" value="recipe"><button type="submit">Sök recept <span aria-hidden="true">→</span></button></form>';
+}
+function rf_studio_card($id) {
+ $post = get_post($id); $data = rf_theme_recipe_data($id);
+ if (!$post || $post->post_status !== 'publish' || $post->post_password || !$data) { return; }
+ echo '<article class="studio-card"><a href="' . esc_url(get_permalink($id)) . '">';
+ if ($data['image']) { echo wp_get_attachment_image($data['image'], 'medium_large', false, array('loading'=>'lazy','sizes'=>'(max-width: 600px) 100vw, (max-width: 900px) 50vw, 360px')); }
+ echo '<h3>' . esc_html(get_the_title($id)) . '</h3></a>';
+ if (function_exists('rf_card_details_html')) { echo rf_card_details_html($id); }
+ echo '</article>';
+}
+function rf_studio_topics() {
+ echo '<nav class="studio-topics" aria-label="Utforska recepten"><a href="' . esc_url(rf_theme_page_url('alla-recept')) . '">Alla recept</a><a href="' . esc_url(rf_theme_page_url('sous-vide')) . '">Sous vide</a>';
+ $term = get_term_by('name', 'Grillat', 'category');
+ if ($term && !is_wp_error($term)) { echo '<a href="' . esc_url(get_term_link($term)) . '">Grillat & BBQ</a>'; }
+ echo '<a href="' . esc_url(rf_theme_page_url('sous-vide-temperaturer-och-tider')) . '">Temperaturer & tider</a></nav>';
+}
