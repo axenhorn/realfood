@@ -1,6 +1,6 @@
 /*
 Theme Name: Real Food by Axenhorn
-Version: 0.4.0
+Version: 0.4.1
 Description: Ett lätt recepttema med fokus på mat, läsbarhet och befintliga recept.
 Text Domain: real-food
 */
@@ -83,3 +83,22 @@ body.rf-studio{--paper:#f7f2e8;--ink:#2f2f2b;--muted:#66685e;--clay:#687750;--li
 @media(max-width:900px){.rf-studio .site-header{gap:24px}.rf-studio .site-header nav{gap:10px 18px}.studio-hero{gap:30px}.studio-hero-image figcaption{align-items:flex-start;flex-direction:column;gap:4px}.studio-methods{gap:35px;padding:35px 25px}.studio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.rf-studio .site-header{padding:24px 22px 20px;gap:20px}.rf-studio .brand-name{font-size:32px}.rf-studio .site-header nav a{font-size:15px}.rf-studio main{padding:0 22px}.studio-hero{grid-template-columns:1fr;padding:24px 0 30px;gap:22px}.studio-hero-copy{padding:0}.studio-hero h1{font-size:clamp(42px,9vw,62px);margin:16px 0}.studio-hero-copy>p:not(.eyebrow){font-size:16px;max-width:530px}.studio-hero-image img{aspect-ratio:1.35}.studio-hero-image figcaption{flex-direction:row;align-items:center}.studio-find{padding:23px 0}.studio-search button{font-size:14px;padding:13px 15px}.studio-search input[type=search]{font-size:15px;padding:13px}.studio-topics{gap:8px 17px}.studio-section{padding:40px 0}.studio-section-heading{align-items:start;flex-direction:column;gap:14px}.studio-section-heading h2{font-size:34px}.studio-grid,.rf-studio .rf-recipes{gap:30px 20px}.studio-card h3,.rf-studio .rf-recipe h2{font-size:23px}.studio-methods{grid-template-columns:1fr;gap:24px;margin-bottom:42px;padding:28px 23px}.studio-methods h2{font-size:35px}.studio-method-links h3{font-size:25px}.studio-page-heading{margin:32px auto 25px}.studio-page-heading>p:last-child{font-size:16px}.studio-page-intro{font-size:22px}.rf-studio .site-footer{padding-inline:22px}.rf-studio .article-content .alignright{float:none}}
 @media(max-width:500px){.studio-grid{grid-template-columns:1fr}.studio-hero-image figcaption>span{font-size:8px}.studio-hero-image figcaption a{font-size:15px}.studio-search button span{display:none}.studio-search button{padding-inline:12px}}
+
+/* Recipe pages share the studio palette while retaining plugin controls. */
+.rf-studio-recipe .article-header,.rf-studio-recipe .rf-recipe-intro,.rf-studio-recipe .article-content,.rf-studio-recipe .rf-related{max-width:900px;margin-left:auto;margin-right:auto}
+.rf-studio-recipe .rf-recipe-intro>.rf-card-details{font-size:17px;margin-bottom:20px}
+.rf-studio-recipe .rf-recipe-intro .rf-card-summary{display:block;overflow:visible;font-size:19px;line-height:1.65}
+.rf-studio-recipe .rf-main-image img{border-radius:5px}
+.rf-studio-recipe .wprm-recipe{background:#fffcf6;border-radius:5px}
+.rf-studio-recipe .rf-related-grid img{border-radius:4px}
+@media(max-width:760px){
+ .site-header nav a,.studio-topics a{min-height:44px;display:inline-flex;align-items:center}
+ .rf-studio .site-header nav{gap:0 18px}
+ .studio-topics{gap:0 17px}
+ .rf-studio-recipe .article-header{padding-top:24px;padding-bottom:14px}
+ .rf-studio-recipe .article-header h1{font-size:clamp(34px,9vw,48px)}
+ .rf-studio-recipe .rf-recipe-intro .rf-card-summary{font-size:17px}
+ .rf-studio-recipe .rf-related-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){body.rf-studio .rf-recipes,.rf-studio .archive-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
