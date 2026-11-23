@@ -254,7 +254,7 @@ add_filter('the_content', function ($content) {
 function rf_url_restore($backup) {
     update_option('rf_url_trial_active', false);
     $errors = array();
-    foreach ($backup['posts'] as $fields) {
+    foreach (array_reverse($backup['posts']) as $fields) {
         $result = wp_update_post(wp_slash($fields), true);
         if (is_wp_error($result)) { $errors[] = $result->get_error_message(); }
     }
@@ -279,13 +279,22 @@ function rf_url_admin() {
         } elseif ($action === 'apply' && !rf_url_active()) {
             global $wpdb, $wp_rewrite;
             $posts = array(); $map = rf_url_map();
+            // These image attachment pages use the desired recipe slugs. Image files stay unchanged.
+            $attachments = array(471 => array('old'=>'tonfisk-sous-vide', 'new'=>'tonfisk-sous-vide-bild', 'parent'=>470), 1126 => array('old'=>'kimchi', 'new'=>'kimchi-bild', 'parent'=>222));
+            foreach ($attachments as $id => $row) {
+                $post = get_post($id);
+                if (!$post || $post->post_type !== 'attachment' || $post->post_name !== $row['old'] || (int) $post->post_parent !== $row['parent']) { $errors[] = 'Oväntad bildpost ' . $id; continue; }
+                $taken = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND ID != %d AND post_status NOT IN ('trash','auto-draft') LIMIT 1", $row['new'], $id));
+                if ($taken) { $errors[] = 'Bildadress upptagen: ' . $row['new']; }
+                $posts[] = array('ID'=>$id, 'post_title'=>$post->post_title, 'post_name'=>$post->post_name);
+            }
             foreach ($map as $id => $row) {
                 $post = get_post($id);
                 if (!$post || $post->post_type !== $row['type'] || $post->post_status !== 'publish' || $post->post_name !== $row['old']) {
                     $errors[] = 'Oväntat ursprungsläge för recept ' . $id; continue;
                 }
                 $collision = $wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND ID != %d AND post_type IN ('post','page','recipe','attachment') AND post_status NOT IN ('trash','auto-draft') LIMIT 1", $row['new'], $id));
-                if ($collision) { $errors[] = 'Adresskollision med post ' . $collision . ': ' . $row['new']; }
+                if ($collision && !isset($attachments[(int) $collision])) { $errors[] = 'Adresskollision med post ' . $collision . ': ' . $row['new']; }
                 $posts[] = array('ID'=>$id, 'post_title'=>$post->post_title, 'post_name'=>$post->post_name);
             }
             $wprm = get_post(1749);
@@ -299,7 +308,8 @@ function rf_url_admin() {
             if (!$errors) {
                 foreach ($posts as $fields) {
                     $id = $fields['ID'];
-                    if (isset($map[$id])) { $fields['post_title'] = $map[$id]['title']; $fields['post_name'] = $map[$id]['new']; }
+                    if (isset($attachments[$id])) { $fields['post_name'] = $attachments[$id]['new']; }
+                    elseif (isset($map[$id])) { $fields['post_title'] = $map[$id]['title']; $fields['post_name'] = $map[$id]['new']; }
                     else { $fields['post_title'] = preg_replace('/^Recept\s+/u', '', $fields['post_title']); $fields['post_title'] = ucfirst($fields['post_title']); }
                     $result = wp_update_post(wp_slash($fields), true);
                     if (is_wp_error($result) || get_post_field('post_name', $id) !== $fields['post_name']) { $errors[] = 'Kunde inte uppdatera post ' . $id; break; }
