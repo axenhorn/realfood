@@ -139,3 +139,12 @@ Christopher har bekräftat att originalförslaget **A – Varm matstudio** är m
 - Provet visade att Redirections automatiska bevakning av inlägg skapade en omvänd regel för julskinka. Den regeln har avaktiverats via Redirection. Bevakning av **inlägg** är nu avstängd endast i staging; bevakning av sidor lämnades oförändrad. Kontrollera denna inställning före ytterligare återställningsprov.
 - Koden är sparad i GitHub, senast `c7fc95964cb85a07deee81b8667686a6d2b07237`, och inlagd via WordPress filredigerare i staging med bekräftad sparning. Ingen Actions-körning eller produktionspublicering i detta steg.
 - Före produktion återstår aktuell backup, Search Console-underlag, fullständig kontroll av interna länkar och sitemap, hantering av nya recept utanför den fasta testlistan och ett generellt skydd mot automatiska redirect-regler under migrering/återställning.
+
+## Generella sidor i staging 2026-11-23 – tema 0.4.0
+- Varm matstudio införd på startsida, receptöversikt, ämnessidor och sök/arkiv: benvit bakgrund, olivgrönt, mörk text, stora serifrubriker och gemensam navigation.
+- Startsida med delad introduktion/matbild, receptsökning, sex utvalda recept och metodlänkar. Befintliga receptbilder och riktiga metadata används.
+- Alla recept har egen introduktion, sökning och ämneslänkar. Receptkort behåller betyg, tider och ingress där källtext finns. Saknade ingresser återstår redaktionellt.
+- Individuella recept behåller tidigare layout tills nästa designsteg; den nya formgivningen är avgränsad via body-klassen rf-studio.
+- Källkod sparad i GitHub till och med 0f6e491a9feddae3ba283e9f859a6e8488def1c2. Tre temafiler sparade via WordPress temaredigerare med bekräftelse. Ingen Actions-körning eller produktionspublicering.
+- Kontrollerat visuellt på dator: startsida, receptöversikt och Sous vide. Sökning på jalapeno gav receptresultat. Sju representativa URL:er svarar 200 med en h1 och fortsatt noindex; nya CSS-versionen laddas, individuella recept saknar avsiktligt rf-studio.
+- Responsiva CSS-regler finns; separat visuell mobilgranskning återstår. Nästa steg är mobilfinjustering och individuell receptmall enligt originalförlagan.
