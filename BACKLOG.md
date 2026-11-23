@@ -120,3 +120,22 @@ Planerat efter Christophers önskemål; ännu inte implementerat.
 
 ### URL-inventering klar 2026-11-22
 Underlag finns i [docs/url-migration/README.md](docs/url-migration/README.md): 32 recept, 26 adressbyten, 18 publika titeländringar och 1 separat WPRM-namn. 40 explicita 301-regler omfattar även äldre alternativa rotadresser. Alla 25 äldre recept visas redan på två URL-varianter med samma recept-ID och canonical till /recipe/. Inga kollisioner mot 11 publicerade sidor eller mellan målen. Befintliga redirect-regler, utkast och Search Console återstår att kontrollera. Ingen titel eller URL ändrad ännu. Testmiljön behöver permalänkar före realistiska migreringstester.
+
+## Fastställd designriktning 2026-11-23 – Varm matstudio
+Christopher har bekräftat att originalförslaget **A – Varm matstudio** är målet för den fortsatta designen.
+- Förlaga: [Real Food: Kyckling sous vide.png](https://chatgpt.com/library?file_id=libfile_822044f8395c8191a4617f758773f118&account_id=personal).
+- Originalets palett: Ivory `#F7F2E8`, Olive `#687750`, Charcoal `#2F2F2B`.
+- Utgå från originalets matbilder, luftiga receptlayout och tydliga rubriknivåer. På bred skärm visas ingredienser och instruktioner intill varandra; mobilen får en sammanhängande kolumn.
+- Nuvarande stagingtema är en funktionell mellanversion. Dess terrakottaaccent behöver stämmas av mot det valda olivgröna förslaget, innan designen anses färdig.
+- Bevara funktionella krav: huvudbild högt upp, riktiga betyg, tydliga tider, kort ingress i alla receptgrids, relaterade recept samt inga kommentarer eller utskriftsknappar.
+- Den separata förlagan **B – Eld & råvara** får inte av misstag ersätta A som huvudriktning.
+- Slutlig visuell jämförelse på dator och mobil återstår. Ingen ny designpublicering genomförd i detta steg.
+
+## URL-test 2026-11-23
+- Plugin 0.3.0 innehåller en uttrycklig stagingbegränsad, återställningsbar migration för 32 recept. 26 huvudadresser ändras; 18 publika titlar rensas.
+- Separata receptnamn korrigerade för WPRM-julskinka 1749 och äldre lammracks 429.
+- Bildbilagorna 471 och 1126 hade kollisioner med tonfisk- och kimchiadresserna. Deras bilagsslugs får suffixet `-bild`; bildfilerna ändras inte.
+- Återställningsprov verifierade 32 ursprungliga titlar/slugs, ursprungliga enkla permalänkar och båda bilagsslugs. Migreringen aktiverades sedan igen.
+- Provet visade att Redirections automatiska bevakning av inlägg skapade en omvänd regel för julskinka. Den regeln har avaktiverats via Redirection. Bevakning av **inlägg** är nu avstängd endast i staging; bevakning av sidor lämnades oförändrad. Kontrollera denna inställning före ytterligare återställningsprov.
+- Koden är sparad i GitHub, senast `c7fc95964cb85a07deee81b8667686a6d2b07237`, och inlagd via WordPress filredigerare i staging med bekräftad sparning. Ingen Actions-körning eller produktionspublicering i detta steg.
+- Före produktion återstår aktuell backup, Search Console-underlag, fullständig kontroll av interna länkar och sitemap, hantering av nya recept utanför den fasta testlistan och ett generellt skydd mot automatiska redirect-regler under migrering/återställning.
