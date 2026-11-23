@@ -258,6 +258,7 @@ function rf_url_restore($backup) {
         $result = wp_update_post(wp_slash($fields), true);
         if (is_wp_error($result)) { $errors[] = $result->get_error_message(); }
     }
+    if (isset($backup['legacy_name'])) { update_post_meta(429, 'recipe_title', wp_slash($backup['legacy_name'])); }
     global $wp_rewrite;
     $wp_rewrite->set_permalink_structure($backup['permalink']);
     foreach (rf_url_map() as $row) { unset($wp_rewrite->extra_rules_top['^' . preg_quote($row['new'], '#') . '/?$']); }
@@ -303,7 +304,15 @@ function rf_url_admin() {
             if (!$errors) {
                 $backup = array('created'=>gmdate('c'), 'permalink'=>get_option('permalink_structure'), 'posts'=>$posts);
                 if (!get_option('rf_url_trial_backup')) { add_option('rf_url_trial_backup', $backup, '', false); }
-                if (!get_option('rf_url_trial_backup')) { $errors[] = 'Kunde inte spara återställningsdata.'; }
+                $saved_backup = get_option('rf_url_trial_backup');
+                if (!$saved_backup) { $errors[] = 'Kunde inte spara återställningsdata.'; }
+                else {
+                    if (!isset($saved_backup['legacy_name'])) {
+                        $saved_backup['legacy_name'] = get_post_meta(429, 'recipe_title', true);
+                        update_option('rf_url_trial_backup', $saved_backup, false);
+                    }
+                    $backup['legacy_name'] = $saved_backup['legacy_name'];
+                }
             }
             if (!$errors) {
                 foreach ($posts as $fields) {
@@ -316,6 +325,7 @@ function rf_url_admin() {
                 }
                 if ($errors) { $errors = array_merge($errors, rf_url_restore($backup)); }
                 else {
+                    update_post_meta(429, 'recipe_title', 'Lammracks - Sous Vide');
                     update_option('rf_url_trial_active', true, false);
                     $wp_rewrite->set_permalink_structure('/%postname%/');
                     rf_url_rules(); flush_rewrite_rules();
