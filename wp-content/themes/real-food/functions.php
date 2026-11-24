@@ -134,3 +134,22 @@ function rf_studio_topics() {
  if ($term && !is_wp_error($term)) { echo '<a href="' . esc_url(get_term_link($term)) . '">Grillat & BBQ</a>'; }
  echo '<a href="' . esc_url(rf_theme_page_url('sous-vide-temperaturer-och-tider')) . '">Temperaturer & tider</a></nav>';
 }
+
+/** Let the theme control legacy inline presentation, preserving recipe data and controls. */
+add_filter('the_content', function ($html) {
+ if (!is_singular('recipe') || !class_exists('DOMDocument')) { return $html; }
+ $previous = libxml_use_internal_errors(true);
+ $doc = new DOMDocument();
+ $ok = $doc->loadHTML('<?xml encoding="utf-8" ?><div id="rf-content-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+ if (!$ok) { libxml_clear_errors(); libxml_use_internal_errors($previous); return $html; }
+ $xp = new DOMXPath($doc);
+ foreach ($xp->query('//*[contains(concat(" ", normalize-space(@class), " "), " wpurp-container ")]') as $root) {
+  $root->removeAttribute('style');
+  foreach ($xp->query('.//*[@style]', $root) as $node) { $node->removeAttribute('style'); }
+ }
+ $root = $doc->getElementById('rf-content-root');
+ $out = '';
+ if ($root) { foreach ($root->childNodes as $child) { $out .= $doc->saveHTML($child); } }
+ libxml_clear_errors(); libxml_use_internal_errors($previous);
+ return $out ?: $html;
+}, 99);
