@@ -1,6 +1,6 @@
 /*
 Theme Name: Real Food by Axenhorn
-Version: 0.4.1
+Version: 0.4.2
 Description: Ett lätt recepttema med fokus på mat, läsbarhet och befintliga recept.
 Text Domain: real-food
 */
@@ -102,3 +102,26 @@ body.rf-studio{--paper:#f7f2e8;--ink:#2f2f2b;--muted:#66685e;--clay:#687750;--li
 }
 @media(max-width:500px){body.rf-studio .rf-recipes,.rf-studio .archive-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Desktop composition from A – Varm matstudio. */
+@media(min-width:900px){
+ .rf-studio-recipe .article{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);column-gap:36px;align-items:start}
+ .rf-studio-recipe .breadcrumb{grid-column:1/-1;margin-bottom:24px}
+ .rf-studio-recipe .article-header{grid-column:1;grid-row:2;margin:0;padding:32px 0 12px}
+ .rf-studio-recipe .article-header h1{font-size:clamp(38px,4vw,56px);line-height:1.08}
+ .rf-studio-recipe .article-header .eyebrow{display:none}
+ .rf-studio-recipe .rf-recipe-intro{display:contents}
+ .rf-studio-recipe .rf-recipe-intro>.rf-card-details{grid-column:1;grid-row:3;margin:0 0 20px}
+ .rf-studio-recipe .rf-recipe-intro .rf-card-summary{font:italic 23px/1.45 Georgia,serif}
+ .rf-studio-recipe .rf-recipe-intro>.button{grid-column:1;grid-row:4;justify-self:start;margin-bottom:36px}
+ .rf-studio-recipe .rf-main-image{grid-column:2;grid-row:2/5;margin:0 0 36px;width:100%;height:100%;min-height:420px;max-height:560px}
+ .rf-studio-recipe .rf-main-image img{width:100%;height:100%;object-fit:cover;border-radius:3px}
+ .rf-studio-recipe .article-content,.rf-studio-recipe .rf-related{grid-column:1/-1;max-width:none;width:100%}
+ .rf-studio-recipe .wprm-recipe-template-chic{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:0 38px;background:transparent;border:0;border-top:1px solid var(--line);padding:24px 0}
+ .rf-studio-recipe .wprm-recipe-template-chic>*{grid-column:1/-1}
+ .rf-studio-recipe .wprm-recipe-template-chic>.wprm-recipe-ingredients-container{grid-column:1;grid-row:20;border-right:1px solid var(--line);padding-right:30px}
+ .rf-studio-recipe .wprm-recipe-template-chic>.wprm-recipe-instructions-container{grid-column:2;grid-row:20}
+ .rf-studio-recipe .wprm-container-float-right{display:none}
+}
+.rf-studio-recipe .wprm-recipe-instruction-text{line-height:1.65}
+.rf-studio-recipe .rf-card-time{display:inline-block;margin-right:18px}
