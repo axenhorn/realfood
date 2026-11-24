@@ -148,3 +148,7 @@ Christopher har bekräftat att originalförslaget **A – Varm matstudio** är m
 - Källkod sparad i GitHub till och med 0f6e491a9feddae3ba283e9f859a6e8488def1c2. Tre temafiler sparade via WordPress temaredigerare med bekräftelse. Ingen Actions-körning eller produktionspublicering.
 - Kontrollerat visuellt på dator: startsida, receptöversikt och Sous vide. Sökning på jalapeno gav receptresultat. Sju representativa URL:er svarar 200 med en h1 och fortsatt noindex; nya CSS-versionen laddas, individuella recept saknar avsiktligt rf-studio.
 - Responsiva CSS-regler finns; separat visuell mobilgranskning återstår. Nästa steg är mobilfinjustering och individuell receptmall enligt originalförlagan.
+
+## Receptdesign och köksfunktioner – 2026-11-24
+Designförst: följ original A med text/bild sida vid sida och ingredienser/steg i två kolumner. Planera avprickning på ingrediens- och stegrader; 0.5x/1x/2x och kopiera vid ingredienser; köksläge med tydlig Wake Lock-status ovanför steg; timer endast när explicit tid finns, inga gissade tider; betyg utan kommentarer efter steg och sammanfattning nära rubrik. Funktionerna implementeras i nästa fas, inga inaktiva låtsasknappar i publik vy.
+Schema: båda provrecepten Beef Jerky och Inlagd jalapeno genererar Recipe JSON-LD. Äldre jalapeño anger totalTime PT30M trots väntetid 4 dagar; behöver korrigeras och samtliga 32 recept granskas. Behåll en auktoritativ Recipe-entitet per recept, riktiga betyg och grundportioner i schema även vid klientskalning. Rich Results Test återstår. Markup garanterar inte utökad sökvisning.
