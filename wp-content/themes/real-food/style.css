@@ -125,3 +125,50 @@ body.rf-studio{--paper:#f7f2e8;--ink:#2f2f2b;--muted:#66685e;--clay:#687750;--li
 }
 .rf-studio-recipe .wprm-recipe-instruction-text{line-height:1.65}
 .rf-studio-recipe .rf-card-time{display:inline-block;margin-right:18px}
+
+/* Keep the cooking section directly below the introduction. */
+.rf-studio-recipe .article-content{display:flex;flex-direction:column;padding-top:32px}
+.rf-studio-recipe .article-content>.wprm-recipe-container,.rf-studio-recipe .article-content>.wpurp-container{order:-1;margin-bottom:36px}
+.rf-studio-recipe .wprm-recipe-snippet{display:none}
+.rf-studio-recipe .wprm-recipe-template-chic>.wprm-spacer,.rf-studio-recipe .wprm-template-chic-buttons,.rf-studio-recipe .wprm-icon-decoration-line{display:none}
+.rf-studio-recipe .wprm-recipe-header{font-size:32px!important;text-transform:none!important}
+@media(min-width:900px){
+.rf-studio-recipe .wpurp-container>.wpurp-rows{display:grid!important;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:24px 38px;border-top:1px solid var(--line);padding-top:26px}
+.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row{grid-column:1/-1}
+.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(2){grid-column:1;border-right:1px solid var(--line);padding-right:28px}
+.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(3){grid-column:2;grid-row:2}
+.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns{display:block!important}
+.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns>div{width:100%!important}
+.rf-studio-recipe .wpurp-recipe-image{display:none}
+}
+
+.rf-studio-recipe .wpurp-container{max-width:none!important;width:100%;background:transparent!important;padding:0!important;border:0!important;font:17px/1.65 system-ui,sans-serif!important;color:var(--ink)!important}
+.rf-studio-recipe .wpurp-responsive-mobile{display:none!important}.rf-studio-recipe .wpurp-responsive-desktop{display:block!important}
+.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns,.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns>tbody,.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns>tbody>tr,.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns>tbody>tr>td{display:block;width:100%!important;border:0;padding:0}
+.rf-studio-recipe .wpurp-responsive-desktop>.wpurp-columns>tbody>tr>td+td{display:none}
+.rf-studio-recipe .wpurp-title{font-family:Georgia,serif;color:var(--ink);background:transparent}
+.rf-studio-recipe .wpurp-box{background:transparent;padding:0}
+.rf-studio-recipe .wpurp-recipe-title{font:32px Georgia,serif}
+.rf-studio-recipe .wpurp-recipe-description{display:block;margin:15px 0 25px}
+.rf-studio-recipe .wpurp-recipe-instructions li::marker{color:var(--clay);font:24px Georgia,serif}
+.rf-studio-recipe .wpurp-recipe-ingredients li{padding:9px 0}
+.rf-studio-recipe .wpurp-recipe-tags{display:none}
+
+/* Legacy cooking controls retain compact, predictable dimensions. */
+.rf-studio-recipe .wpurp-icon svg{width:18px!important;height:18px!important;display:inline-block;vertical-align:middle;fill:currentColor}
+.rf-studio-recipe .wpurp-title{font:400 30px/1.2 Georgia,serif!important;margin:0 0 20px!important;padding:0!important}
+.rf-studio-recipe .wpurp-recipe-title{font:400 32px/1.2 Georgia,serif!important}
+.rf-studio-recipe .wpurp-recipe-instructions li{padding:0 0 22px 10px}
+.rf-studio-recipe .wpurp-recipe-servings-changer{width:72px;min-height:44px;border:1px solid var(--line);border-radius:4px;background:#fffcf6}
+
+/* Reading rhythm and compact recipe metadata. */
+.rf-studio-recipe .wpurp-container .wpurp-columns .wpurp-title{font:400 15px/1.5 system-ui,sans-serif!important;margin:0!important}
+.rf-studio-recipe .wpurp-container .wpurp-columns table{margin:0 0 12px!important}
+.rf-studio-recipe .wpurp-container .wpurp-columns table td{border:0!important;padding:4px 12px 4px 0!important;vertical-align:middle}
+.rf-studio-recipe .wpurp-container .wpurp-box>.wpurp-title{display:block;font:400 30px/1.2 Georgia,serif!important;margin:22px 0!important}
+.rf-studio-recipe .wpurp-container .wpurp-recipe-ingredient{padding:9px 0!important;border-bottom:1px solid var(--line);line-height:1.5!important}
+.rf-studio-recipe .wpurp-container .wpurp-recipe-instruction{padding:0 0 24px 12px!important;line-height:1.65!important}
+.rf-studio-recipe .wpurp-recipe-servings-changer{width:auto;border:0;background:transparent}
+.rf-studio-recipe .adjust-recipe-servings{width:64px!important;min-height:44px;border:1px solid var(--line)!important;background:#fffcf6!important;margin-right:8px;padding:8px!important}
+.rf-studio-recipe .wpurp-container>.wpurp-rows{border-top:1px solid var(--line)!important;padding-top:28px!important}
+@media(min-width:900px){.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(2){border-right:1px solid var(--line)!important;padding-right:30px!important}}
