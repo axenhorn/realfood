@@ -172,3 +172,19 @@ body.rf-studio{--paper:#f7f2e8;--ink:#2f2f2b;--muted:#66685e;--clay:#687750;--li
 .rf-studio-recipe .adjust-recipe-servings{width:64px!important;min-height:44px;border:1px solid var(--line)!important;background:#fffcf6!important;margin-right:8px;padding:8px!important}
 .rf-studio-recipe .wpurp-container>.wpurp-rows{border-top:1px solid var(--line)!important;padding-top:28px!important}
 @media(min-width:900px){.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(2){border-right:1px solid var(--line)!important;padding-right:30px!important}}
+
+/* The full introduction lives beside the main image, once. */
+.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:first-child,.rf-studio-recipe .wprm-recipe-name,.rf-studio-recipe .wprm-recipe-summary{display:none!important}
+.rf-studio-recipe .wpurp-recipe-instruction-container,.rf-studio-recipe .wprm-recipe-instructions{counter-reset:cooking-step;list-style:none!important;padding-left:0!important}
+.rf-studio-recipe .wpurp-container .wpurp-recipe-instruction,.rf-studio-recipe .wprm-recipe-instruction{counter-increment:cooking-step;position:relative;padding:0 0 25px 48px!important;list-style:none!important}
+.rf-studio-recipe .wpurp-recipe-instruction:before,.rf-studio-recipe .wprm-recipe-instruction:before{content:counter(cooking-step);position:absolute;left:0;top:0;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#e5e9d9;color:var(--clay);font:19px Georgia,serif}
+
+@media(min-width:900px){.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(2),.rf-studio-recipe .wpurp-container>.wpurp-rows>.wpurp-rows-row:nth-child(3){grid-row:1}}
+.rf-studio-recipe .wpurp-container .wpurp-recipe-instruction:before{content:counter(cooking-step)!important;display:grid!important}
+
+body.rf-studio-recipe .article-content .wprm-recipe-container .wprm-recipe-instruction{padding:0 0 24px 48px!important}
+body.rf-studio-recipe .article-content .wprm-recipe-container .wprm-recipe-ingredient{padding:9px 0!important}
+.rf-studio-recipe .wprm-recipe-template-chic>.wprm-recipe-custom-container{display:none!important}
+.rf-studio-recipe .wprm-recipe-times-container{font-size:14px!important;margin:12px 0!important}
+.rf-studio-recipe .wprm-container-columns-spaced{font-size:14px!important;margin:0 0 18px!important}
+.rf-studio-recipe .wprm-recipe-rating{margin:0 0 12px!important}
