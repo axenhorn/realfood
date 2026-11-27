@@ -152,3 +152,11 @@ Christopher har bekräftat att originalförslaget **A – Varm matstudio** är m
 ## Receptdesign och köksfunktioner – 2026-11-24
 Designförst: följ original A med text/bild sida vid sida och ingredienser/steg i två kolumner. Planera avprickning på ingrediens- och stegrader; 0.5x/1x/2x och kopiera vid ingredienser; köksläge med tydlig Wake Lock-status ovanför steg; timer endast när explicit tid finns, inga gissade tider; betyg utan kommentarer efter steg och sammanfattning nära rubrik. Funktionerna implementeras i nästa fas, inga inaktiva låtsasknappar i publik vy.
 Schema: båda provrecepten Beef Jerky och Inlagd jalapeno genererar Recipe JSON-LD. Äldre jalapeño anger totalTime PT30M trots väntetid 4 dagar; behöver korrigeras och samtliga 32 recept granskas. Behåll en auktoritativ Recipe-entitet per recept, riktiga betyg och grundportioner i schema även vid klientskalning. Rich Results Test återstår. Markup garanterar inte utökad sökvisning.
+
+
+## Receptdesign i staging – 2026-11-27
+- Full ingress bredvid stor huvudbild; upprepade namn/ingresser döljs i själva receptkortet. Varm matstudio-palett och två kolumner för ingredienser/steg på dator.
+- Äldre WPURP-ikoner har fått begränsad storlek; portionsfält, läsrytm, avstånd och numrerade steg har justerats. Båda pluginformaten har verifierats visuellt på desktop (Inlagd jalapeno och Beef Jerky). Ingen horisontell overflow i dessa prov.
+- Befintlig Recipe JSON-LD finns kvar och går att JSON-parsa i båda provrecepten efter ändringarna. Detta är inte en fullständig schema-validering. Den tidigare dokumenterade avvikelsen i äldre totalTime kvarstår. Full audit av 32 recept, Rich Results Test och mobilgranskning återstår före lansering.
+- Köksfunktionernas placering följer ovanstående designplan; nya funktioner är ännu inte implementerade.
+- Sparat i staging via temaredigeraren och synkat med GitHub. Ingen produktionspublicering eller Actions-körning.
