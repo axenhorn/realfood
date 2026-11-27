@@ -8,7 +8,9 @@
  <a class="brand" href="<?php echo esc_url(home_url('/')); ?>"><span class="brand-name">Real Food</span><span class="brand-by">BY AXENHORN</span></a>
  <nav aria-label="Huvudmeny"><?php rf_theme_navigation(); ?></nav>
 </header>
-<main id="main">
+<?php $rf_has_sidebar = !is_404() && !(is_singular() && rf_theme_recipe_data(get_queried_object_id())); ?>
+<main id="main"<?php if ($rf_has_sidebar) { echo ' class="studio-layout"'; } ?>>
+<?php if ($rf_has_sidebar) { echo '<div class="studio-primary">'; } ?>
 <?php if (is_front_page()) : ?>
  <section class="studio-hero">
   <div class="studio-hero-copy"><p class="eyebrow">FRÅN VÅRT KÖK TILL DITT</p><h1>God mat.<br><em>Värd att vänta på.</em></h1><p>Recept för vattenbadet, grillen och röken. Smaker att samlas kring, med tid och omtanke som ingredienser.</p><a class="button" href="<?php echo esc_url(rf_theme_page_url('alla-recept')); ?>">Hitta ditt nästa recept <span aria-hidden="true">→</span></a></div>
@@ -39,6 +41,7 @@
  <article><a href="<?php the_permalink(); ?>"><?php the_post_thumbnail('medium_large', array('loading'=>'lazy')); ?><h2><?php the_title(); ?></h2></a><?php if (function_exists('rf_card_details_html') && rf_card_details(get_the_ID())) { echo rf_card_details_html(get_the_ID()); } else { the_excerpt(); } ?></article>
  <?php endwhile; ?></div><?php if (!have_posts() && !get_query_var('paged')) : ?><p class="screen-reader-text">Slut på resultat.</p><?php endif; the_posts_pagination(); ?></section>
 <?php endif; ?>
+<?php if ($rf_has_sidebar) { echo '</div>'; rf_studio_sidebar(); } ?>
 </main>
 <footer class="site-footer"><div><strong>Real Food</strong><p>Matlagning med tid och omtanke.</p></div><a href="<?php echo esc_url(rf_theme_page_url('alla-recept')); ?>">Alla recept</a><?php $privacy = get_privacy_policy_url(); if ($privacy) : ?><a href="<?php echo esc_url($privacy); ?>">Integritet</a><?php endif; ?></footer>
 <?php wp_footer(); ?></body></html>
