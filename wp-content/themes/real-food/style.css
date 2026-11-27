@@ -188,3 +188,43 @@ body.rf-studio-recipe .article-content .wprm-recipe-container .wprm-recipe-ingre
 .rf-studio-recipe .wprm-recipe-times-container{font-size:14px!important;margin:12px 0!important}
 .rf-studio-recipe .wprm-container-columns-spaced{font-size:14px!important;margin:0 0 18px!important}
 .rf-studio-recipe .wprm-recipe-rating{margin:0 0 12px!important}
+
+/* Editorial desktop rail for the home, collection, guide and archive pages. */
+.rf-studio main.studio-layout{max-width:1360px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:48px;align-items:start}
+.studio-primary{min-width:0}
+.studio-sidebar{min-width:0;border-left:1px solid var(--line);padding:42px 0 50px 28px}
+.studio-sidebar .eyebrow{margin:0 0 12px}
+.studio-sidebar h2{font:400 29px/1.15 Georgia,serif;margin:0 0 24px}
+.studio-sidebar-list{display:grid;gap:27px}
+.studio-sidebar .studio-card{border-bottom:1px solid var(--line);padding-bottom:24px}
+.studio-sidebar .studio-card img{aspect-ratio:3/2}
+.studio-sidebar .studio-card h3{font-size:23px;margin:13px 0 10px}
+.studio-sidebar .rf-card-summary{font-size:14px}
+.studio-sidebar .rf-card-time{display:block;margin:5px 0}
+.studio-sidebar-all{display:inline-block;margin-top:22px;font-size:15px;min-height:44px}
+.studio-sidebar-guide{background:#e9ecdf;padding:24px 20px;margin-top:30px;border-radius:4px}
+.studio-sidebar-guide h2{font-size:27px;margin-bottom:15px}
+.studio-sidebar-guide p,.studio-sidebar-guide a{font-size:15px}
+.studio-layout .studio-hero{gap:28px;grid-template-columns:1fr 1fr;padding-top:42px}
+.studio-layout .studio-hero h1{font-size:clamp(38px,4vw,58px)}
+.studio-layout .studio-hero-copy>p:not(.eyebrow){font-size:17px}
+.studio-layout .studio-hero-image img{aspect-ratio:.92}
+.studio-layout .studio-hero-image figcaption{align-items:flex-start;flex-direction:column;gap:5px}
+.studio-layout .studio-grid,.studio-layout .archive-grid,body.rf-studio .studio-layout .rf-recipes{grid-template-columns:repeat(2,minmax(0,1fr))}
+.studio-layout .studio-methods{gap:28px;padding:32px 25px}
+.studio-layout .studio-methods h2{font-size:35px}
+.studio-layout .article-header h1{font-size:clamp(36px,4.5vw,58px)}
+@media(max-width:1050px){
+ .rf-studio main.studio-layout{display:block;max-width:1000px}
+ .studio-sidebar{border-left:0;border-top:1px solid var(--line);padding:35px 0}
+ .studio-sidebar-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+ .studio-sidebar-guide{max-width:520px}
+}
+@media(max-width:760px){
+ .studio-layout .studio-hero{grid-template-columns:1fr;padding-top:26px}
+ .studio-layout .studio-hero-image img{aspect-ratio:1.35}
+}
+@media(max-width:500px){
+ .studio-layout .studio-grid,.studio-layout .archive-grid,body.rf-studio .studio-layout .rf-recipes,.studio-sidebar-list{grid-template-columns:1fr}
+ .studio-sidebar .studio-card img{aspect-ratio:16/10}
+}
