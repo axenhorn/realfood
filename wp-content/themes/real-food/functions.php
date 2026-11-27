@@ -59,7 +59,22 @@ function rf_theme_recipe_data($post_id) {
 function rf_theme_recipe_intro($post_id, $data) {
  if (!$data) { return; }
  echo '<div class="rf-recipe-intro">';
- if (function_exists('rf_card_details_html')) { echo rf_card_details_html($post_id); }
+ if (function_exists('rf_card_details_html')) {
+  $summary = get_post_meta($post_id, 'recipe_description', true);
+  if ('recipe' !== get_post_type($post_id) && class_exists('WPRM_Recipe_Manager')) {
+   $ids = WPRM_Recipe_Manager::get_recipe_ids_from_post($post_id);
+   $recipe = $ids ? WPRM_Recipe_Manager::get_recipe(reset($ids)) : false;
+   if ($recipe) { $summary = $recipe->summary(); }
+  }
+  $summary = trim(wp_strip_all_tags(strip_shortcodes((string) $summary)));
+  $details = rf_card_details_html($post_id);
+  if ($summary) {
+   $details = preg_replace_callback('/<p class="rf-card-summary">.*?<\/p>/s', function () use ($summary) {
+    return '<p class="rf-card-summary">' . esc_html($summary) . '</p>';
+   }, $details, 1);
+  }
+  echo $details;
+ }
  echo '<a class="button" href="#' . esc_attr($data['anchor']) . '">Gå till recept</a>';
  if ($data['image']) {
   echo '<figure class="rf-main-image">' . wp_get_attachment_image($data['image'], 'large', false, array(
