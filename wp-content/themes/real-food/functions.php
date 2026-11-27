@@ -168,3 +168,23 @@ add_filter('the_content', function ($html) {
  libxml_clear_errors(); libxml_use_internal_errors($previous);
  return $out ?: $html;
 }, 99);
+
+/** A public, chronological recipe rail; never imply measured popularity. */
+function rf_studio_sidebar() {
+ $query = new WP_Query(array(
+  'post_type'=>array('post','recipe'), 'post_status'=>'publish', 'has_password'=>false,
+  'posts_per_page'=>80, 'no_found_rows'=>true, 'ignore_sticky_posts'=>true,
+  'orderby'=>array('date'=>'DESC','ID'=>'DESC'),
+  'post__not_in'=>is_singular() ? array(get_queried_object_id()) : array(),
+ ));
+ $ids = array();
+ foreach ($query->posts as $candidate) {
+  if (rf_theme_recipe_data($candidate->ID)) { $ids[] = $candidate->ID; }
+  if (count($ids) === 4) { break; }
+ }
+ if (!$ids) { return; }
+ echo '<aside class="studio-sidebar" aria-labelledby="studio-latest-title"><section class="studio-sidebar-recipes"><p class="eyebrow">NYTT I RECEPTBOKEN</p><h2 id="studio-latest-title">Senaste recepten</h2><div class="studio-sidebar-list">';
+ foreach ($ids as $id) { rf_studio_card($id); }
+ echo '</div><a class="studio-sidebar-all" href="' . esc_url(rf_theme_page_url('alla-recept')) . '">Utforska alla recept</a></section>';
+ echo '<section class="studio-sidebar-guide"><p class="eyebrow">NÄRA TILL HANDS</p><h2>Rätt tid.<br>Rätt temperatur.</h2><p>Hitta tider och temperaturer inför nästa middag.</p><a href="' . esc_url(rf_theme_page_url('sous-vide-temperaturer-och-tider')) . '">Till sous vide-guiden</a></section></aside>';
+}
