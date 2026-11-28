@@ -189,6 +189,37 @@ function rf_studio_sidebar() {
  echo '<section class="studio-sidebar-guide"><p class="eyebrow">NÄRA TILL HANDS</p><h2>Rätt tid.<br>Rätt temperatur.</h2><p>Hitta tider och temperaturer inför nästa middag.</p><a href="' . esc_url(rf_theme_page_url('sous-vide-temperaturer-och-tider')) . '">Till sous vide-guiden</a></section></aside>';
 }
 
+function rf_lab_url(string $url, string $base=''): string {
+ $url=trim($url);
+ if(str_starts_with($url,'//')) $url='https:'.$url;
+ if($url && !parse_url($url,PHP_URL_SCHEME) && $base) {
+  $b=parse_url($base); $root=$b['scheme'].'://'.$b['host'];
+  $url=$root.(str_starts_with($url,'/')?'':rtrim(dirname($b['path']??'/'),'/').'/').$url;
+ }
+ $p=parse_url($url);
+ return $p && in_array(strtolower($p['scheme']??''),['http','https'],true) && isset($p['host']) && !isset($p['user']) && !isset($p['pass']) ? $url : '';
+}
+function rf_lab_fetch(string $url): array {
+ for($redirect=0;$redirect<5;$redirect++) {
+  $url=rf_lab_url($url); $p=parse_url($url);
+  if(!$url || isset($p['port']) && !in_array($p['port'],[80,443],true)) throw new RuntimeException('Ange en vanlig http- eller https-länk.');
+  $host=$p['host'];
+  if(filter_var($host,FILTER_VALIDATE_IP) || !str_contains($host,'.')) throw new RuntimeException('Länken måste gå till en offentlig webbplats.');
+  $ips=gethostbynamel($host)?:[];
+  if(!$ips) throw new RuntimeException('Webbplatsen kunde inte hittas.');
+  foreach($ips as $ip) if(!filter_var($ip,FILTER_VALIDATE_IP,FILTER_FLAG_NO_PRIV_RANGE|FILTER_FLAG_NO_RES_RANGE)) throw new RuntimeException('Adressen är inte tillåten.');
+  $port=$p['port']??($p['scheme']==='https'?443:80); $body=''; $location='';
+  $c=curl_init($url);
+  curl_setopt_array($c,[CURLOPT_FOLLOWLOCATION=>false,CURLOPT_CONNECTTIMEOUT=>8,CURLOPT_TIMEOUT=>15,CURLOPT_PROTOCOLS=>CURLPROTO_HTTP|CURLPROTO_HTTPS,CURLOPT_PROXY=>'',CURLOPT_RESOLVE=>["$host:$port:".$ips[0]],CURLOPT_USERAGENT=>'RealFoodImportTest/0.1 (personal recipe importer)',CURLOPT_ENCODING=>'',CURLOPT_HEADERFUNCTION=>function($c,$line)use(&$location){if(stripos($line,'location:')===0)$location=trim(substr($line,9));return strlen($line);},CURLOPT_WRITEFUNCTION=>function($c,$chunk)use(&$body){if(strlen($body)+strlen($chunk)>2500000)return 0;$body.=$chunk;return strlen($chunk);}]);
+  $ok=curl_exec($c);$status=curl_getinfo($c,CURLINFO_RESPONSE_CODE);curl_close($c);
+  if(!$ok)throw new RuntimeException('Sidan gick inte att hämta. Klistra in recepttexten i stället.');
+  if($status>=300 && $status<400 && $location){$url=rf_lab_url($location,$url);continue;}
+  if($status!==200)throw new RuntimeException('Webbplatsen tillät inte hämtningen. Klistra in recepttexten i stället.');
+  return [$body,$url];
+ }
+ throw new RuntimeException('Länken omdirigerades för många gånger.');
+}
+
 /** Real Food import prototype: staging administrators only, no public publication. */
 function rf_lab_text($value) {
  return is_scalar($value) ? trim(html_entity_decode(wp_strip_all_tags((string)$value), ENT_QUOTES | ENT_HTML5, 'UTF-8')) : '';
@@ -208,11 +239,7 @@ function rf_lab_find($value, &$recipes, $depth = 0) {
  foreach ($value as $item) { rf_lab_find($item, $recipes, $depth + 1); }
 }
 function rf_lab_import($url) {
- $response = wp_safe_remote_get($url, array('timeout'=>18, 'redirection'=>3, 'limit_response_size'=>2000000, 'headers'=>array('Accept'=>'text/html,application/xhtml+xml'), 'user-agent'=>'RealFoodImportTest/0.1'));
- if (is_wp_error($response)) { throw new RuntimeException('Länken kunde inte hämtas. Klistra in recepttexten i stället.'); }
- if (wp_remote_retrieve_response_code($response) !== 200) { throw new RuntimeException('Källan tillåter inte hämtningen just nu. Klistra in recepttexten i stället.'); }
- $html = wp_remote_retrieve_body($response);
- if (strlen($html) >= 2000000) { throw new RuntimeException('Sidan är för stor för testimporten. Klistra in recepttexten.'); }
+ [$html, $url] = rf_lab_fetch($url);
  $previous = libxml_use_internal_errors(true); $doc = new DOMDocument();
  $doc->loadHTML('<?xml encoding="utf-8" ?>'.$html, LIBXML_NONET);
  libxml_clear_errors(); libxml_use_internal_errors($previous);
